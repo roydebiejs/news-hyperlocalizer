@@ -1,6 +1,6 @@
-# Project Name
+# News Hyperlocalizer Front-end
 
-Brief description of your project.
+Brief description of the project.
 
 ## Prerequisites
 
@@ -18,8 +18,8 @@ To set up your development environment:
 
 1. Clone the repo:
    ```bash
-   git clone https://yourrepositoryurl.git
-   cd your-project-directory
+   git clone https://github.com/roydebiejs/news-hyperlocalizer.git
+   cd news-hyperlocalizer
    ```
 2. Start the development server:
    ```bash
@@ -34,5 +34,5 @@ After running the commands above, you can start developing your application. The
 
 ### Additional Notes
 
-    - If you experience any problems, please make sure Docker is running on your machine.
-    - Ensure that no other services are running on port 5173 to avoid port conflicts.
+- If you experience any problems, please make sure Docker is running on your machine.
+- Ensure that no other services are running on port 5173 to avoid port conflicts.
