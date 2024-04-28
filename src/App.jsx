@@ -1,7 +1,8 @@
-import { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
 import { Menu, Popover, Transition } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
+import axios from "axios";
 
 const navigation = [
   { name: "Home", href: "/", current: true },
@@ -14,6 +15,27 @@ function classNames(...classes) {
 }
 
 export default function App() {
+  const getSources = async () => {
+    await axios
+      .get(import.meta.env.VITE_API_URL + "/api/sources/", {
+        auth: {
+          username: import.meta.env.VITE_AUTH_USERNAME,
+          password: import.meta.env.VITE_AUTH_PASSWORD,
+        },
+      })
+      .then(async function (response) {
+        console.log("Authenticated");
+        console.log(response.data);
+      })
+      .catch(function (error) {
+        console.log("Error on Authentication");
+      });
+  };
+
+  useEffect(() => {
+    getSources();
+  }, []);
+
   return (
     <>
       <div className="min-h-full">
