@@ -1,6 +1,6 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
-import Home from "./pages/Home";
+import News from "./pages/News";
 import Sources from "./pages/Sources";
 import Tasks from "./pages/Tasks";
 
@@ -14,7 +14,8 @@ export default function App() {
           <Nav
             page={
               <Routes>
-                <Route path="/" element={<Home />} />
+                <Route path="/" element={<Navigate to="/stories" replace />} />
+                <Route path="/stories" element={<News />} />
                 <Route path="/sources" element={<Sources />} />
                 <Route path="/tasks" element={<Tasks />} />
               </Routes>

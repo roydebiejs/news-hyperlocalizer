@@ -1,5 +1,5 @@
 const Sources = () => {
-  return <p>Sources</p>;
+  return <p>Bronnen</p>;
 };
 
 export default Sources;

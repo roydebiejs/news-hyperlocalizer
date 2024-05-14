@@ -8,13 +8,11 @@ import {
   UserGroupIcon,
   ClipboardDocumentListIcon,
 } from "@heroicons/react/24/outline";
-import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
-import logo from "../assets/logo.svg";
 
 import { Link } from "react-router-dom";
 
 const navigation = [
-  { name: "Home", href: "/", icon: HomeIcon },
+  { name: "Nieuws", href: "/stories", icon: HomeIcon },
   {
     name: "Taaktoewijzing",
     href: "/tasks",
@@ -33,8 +31,7 @@ function classNames(...classes) {
 
 export default function Nav(props) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [search, setSearch] = useState("");
-  const [active, setActive] = useState("/");
+  const [active, setActive] = useState(window.location.pathname);
 
   return (
     <>
@@ -183,9 +180,7 @@ export default function Nav(props) {
             <p className="font-bold">NEWS HYPERLOCALIZER</p>
           </div>
 
-          <main className="py-10">
-            <div className="px-4 sm:px-6 lg:px-8">{props.page}</div>
-          </main>
+          <main className="py-10">{props.page}</main>
         </div>
       </div>
     </>
