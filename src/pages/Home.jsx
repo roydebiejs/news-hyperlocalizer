@@ -1,7 +1,5 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import axios from "axios";
-
-import Nav from "../components/Nav";
 
 export default function Home() {
   const getSources = async () => {
@@ -16,7 +14,7 @@ export default function Home() {
         console.log("Authenticated");
         console.log(response.data);
       })
-      .catch(function (error) {
+      .catch(() => {
         console.log("Error on Authentication");
       });
   };
@@ -27,7 +25,7 @@ export default function Home() {
 
   return (
     <>
-      <Nav page={<p>Homepage</p>} />
+      <p>Homepage</p>
     </>
   );
 }

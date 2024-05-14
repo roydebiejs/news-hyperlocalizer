@@ -1,5 +1,6 @@
-import React, { Fragment, useEffect, useState } from "react";
-import { Menu, Popover, Transition, Dialog } from "@headlessui/react";
+/* eslint-disable react/prop-types */
+import { Fragment, useState } from "react";
+import { Transition, Dialog } from "@headlessui/react";
 import {
   Bars3Icon,
   XMarkIcon,
@@ -8,7 +9,6 @@ import {
   ClipboardDocumentListIcon,
 } from "@heroicons/react/24/outline";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
-import axios from "axios";
 import logo from "../assets/logo.svg";
 
 import { Link } from "react-router-dom";
@@ -34,6 +34,7 @@ function classNames(...classes) {
 export default function Nav(props) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [search, setSearch] = useState("");
+  const [active, setActive] = useState("/");
 
   return (
     <>
@@ -90,7 +91,6 @@ export default function Nav(props) {
                       </button>
                     </div>
                   </Transition.Child>
-                  {/* Sidebar component, swap this element with another sidebar if you like */}
                   <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-4 ring-1 ring-white/10">
                     <div className="flex h-16 shrink-0 items-center">
                       <img
@@ -107,6 +107,7 @@ export default function Nav(props) {
                               <li key={item.name}>
                                 <Link
                                   to={item.href}
+                                  onClick={() => setSidebarOpen(false)}
                                   className={classNames(
                                     item.href === window.location.pathname
                                       ? "bg-gray-800 text-white"
@@ -133,9 +134,7 @@ export default function Nav(props) {
           </Dialog>
         </Transition.Root>
 
-        {/* Static sidebar for desktop */}
         <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
-          {/* Sidebar component, swap this element with another sidebar if you like */}
           <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-4">
             <div className="flex h-16 shrink-0 items-center">
               <img className="h-8 w-auto" src={logo} alt="Your Company" />
@@ -181,7 +180,6 @@ export default function Nav(props) {
               <Bars3Icon className="h-6 w-6" aria-hidden="true" />
             </button>
 
-            {/* Separator */}
             <div
               className="h-6 w-px bg-gray-900/10 lg:hidden"
               aria-hidden="true"
