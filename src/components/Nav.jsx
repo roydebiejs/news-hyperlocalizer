@@ -91,14 +91,7 @@ export default function Nav(props) {
                       </button>
                     </div>
                   </Transition.Child>
-                  <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-4 ring-1 ring-white/10">
-                    <div className="flex h-16 shrink-0 items-center">
-                      <img
-                        className="h-8 w-auto"
-                        src={logo}
-                        alt="News Hyperlocalizer"
-                      />
-                    </div>
+                  <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-4 pt-20 ring-1 ring-white/10">
                     <nav className="flex flex-1 flex-col">
                       <ul role="list" className="flex flex-1 flex-col gap-y-7">
                         <li>
@@ -107,9 +100,12 @@ export default function Nav(props) {
                               <li key={item.name}>
                                 <Link
                                   to={item.href}
-                                  onClick={() => setSidebarOpen(false)}
+                                  onClick={() => {
+                                    setActive(item.href);
+                                    setSidebarOpen(false);
+                                  }}
                                   className={classNames(
-                                    item.href === window.location.pathname
+                                    item.href === active
                                       ? "bg-gray-800 text-white"
                                       : "text-gray-400 hover:text-white hover:bg-gray-800",
                                     "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
@@ -135,10 +131,7 @@ export default function Nav(props) {
         </Transition.Root>
 
         <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
-          <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-4">
-            <div className="flex h-16 shrink-0 items-center">
-              <img className="h-8 w-auto" src={logo} alt="Your Company" />
-            </div>
+          <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-4 pt-20">
             <nav className="flex flex-1 flex-col">
               <ul role="list" className="flex flex-1 flex-col gap-y-7">
                 <li>
@@ -147,8 +140,12 @@ export default function Nav(props) {
                       <li key={item.name}>
                         <Link
                           to={item.href}
+                          onClick={() => {
+                            setActive(item.href);
+                            setSidebarOpen(false);
+                          }}
                           className={classNames(
-                            item.href === window.location.pathname
+                            item.href === active
                               ? "bg-gray-800 text-white"
                               : "text-gray-400 hover:text-white hover:bg-gray-800",
                             "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
@@ -179,35 +176,11 @@ export default function Nav(props) {
               <span className="sr-only">Open</span>
               <Bars3Icon className="h-6 w-6" aria-hidden="true" />
             </button>
-
             <div
               className="h-6 w-px bg-gray-900/10 lg:hidden"
               aria-hidden="true"
             />
-
-            <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
-              <form className="relative flex flex-1" action="#" method="GET">
-                <label htmlFor="search-field" className="sr-only">
-                  Search
-                </label>
-                <MagnifyingGlassIcon
-                  className="pointer-events-none absolute inset-y-0 left-0 h-full w-5 text-gray-400"
-                  aria-hidden="true"
-                />
-                <input
-                  id="search-field"
-                  className="block h-full w-full border-0 py-0 pl-8 pr-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm"
-                  placeholder="Zoeken..."
-                  type="search"
-                  name="search"
-                  value={search}
-                  onChange={(e) => {
-                    setSearch(e.target.value);
-                    console.log("Search", e.target.value);
-                  }}
-                />
-              </form>
-            </div>
+            <p className="font-bold">NEWS HYPERLOCALIZER</p>
           </div>
 
           <main className="py-10">
