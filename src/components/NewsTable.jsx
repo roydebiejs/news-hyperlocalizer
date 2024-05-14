@@ -16,6 +16,7 @@ export default function NewsTable() {
       })
       .then(async function (response) {
         setStories(response.data.results);
+        console.log(response.data.results);
       })
       .catch(() => {
         console.log("Error on Authentication");
@@ -50,6 +51,12 @@ export default function NewsTable() {
                     >
                       Titel
                     </th>
+                    <th
+                      scope="col"
+                      className="py-3.5 pr-4 text-left text-sm font-semibold text-gray-900"
+                    >
+                      Auteur
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 bg-white">
@@ -59,9 +66,13 @@ export default function NewsTable() {
                       onClick={() => {
                         navigate(`/stories/${story.id}`);
                       }}
+                      className="cursor-pointer hover:bg-gray-50"
                     >
-                      <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 cursor-pointer">
+                      <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                         {story.title}
+                      </td>
+                      <td className="whitespace-nowrap py-4 pr-4 text-sm text-gray-500">
+                        {story.author}
                       </td>
                     </tr>
                   ))}
