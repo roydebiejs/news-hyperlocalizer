@@ -31,7 +31,9 @@ function classNames(...classes) {
 
 export default function Nav(props) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [active, setActive] = useState(window.location.pathname);
+  const [active, setActive] = useState(
+    window.location.pathname === "/" ? "/stories" : window.location.pathname
+  );
 
   return (
     <>
