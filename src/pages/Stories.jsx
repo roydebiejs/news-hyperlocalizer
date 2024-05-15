@@ -1,6 +1,6 @@
 import NewsTable from "../components/NewsTable";
 
-export default function News() {
+export default function Stories() {
   return (
     <>
       <NewsTable />
