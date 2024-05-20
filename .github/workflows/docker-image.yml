@@ -51,5 +51,5 @@ jobs:
           file: ./Dockerfile
           builder: ${{ steps.buildx.outputs.name }}
           push: true
-          platforms: linux/arm64,linux/amd64
+          platforms: linux/arm64
           tags: roydebie2000/news-hyperlocalizer:${{ env.tag }}
