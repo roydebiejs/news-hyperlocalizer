@@ -35,7 +35,7 @@ jobs:
           file: ./Dockerfile
           push: true
           platforms: linux/amd64,linux/arm64
-          tags: ghcr.io/${{ env.OWNER }}/news_hyperlocalizer
+          tags: ghcr.io/roydebiejs/news_hyperlocalizer
 
       - name: Make image public
         run: |
@@ -43,5 +43,5 @@ jobs:
           curl -X PATCH \
             -H "Authorization: bearer ${{ secrets.GHCR_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com/user/packages/container/${{ env.OWNER }}/news_hyperlocalizer/versions/$PACKAGE_VERSION \
+            https://api.github.com/user/packages/container/roydebiejs/news_hyperlocalizer/versions/$PACKAGE_VERSION \
             -d '{"visibility":"public"}'
