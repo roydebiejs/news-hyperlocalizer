@@ -10,7 +10,7 @@ import Nav from "./components/Nav";
 export default function App() {
   return (
     <>
-      <BrowserRouter basename="/news-hyperlocalizer">
+      <BrowserRouter>
         <div>
           <Nav
             page={
@@ -20,6 +20,7 @@ export default function App() {
                 <Route path="/stories/:id" element={<Story />} />
                 <Route path="/sources" element={<Sources />} />
                 <Route path="/tasks" element={<Tasks />} />
+                <Route path="*" element={<Navigate to="/stories" replace />} />
               </Routes>
             }
           />
