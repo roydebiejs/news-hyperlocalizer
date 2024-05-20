@@ -11,8 +11,8 @@ jobs:
   Docker:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 18
 
@@ -29,7 +29,7 @@ jobs:
 
       - name: Save version
         id: version
-        run: echo ::set-output name=tag::$(echo $(node -p -e "require('./package.json').version"))
+        run: echo "tag=$(node -p -e "require('./package.json').version")" >> $GITHUB_ENV
 
       - name: Increase version
         run: npm version patch
@@ -41,7 +41,7 @@ jobs:
         run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
 
       - name: Build Docker image
-        run: docker build . --file Dockerfile --tag roydebiejs/news-hyperlocalizer:${{steps.version.outputs.tag}}
+        run: docker build . --file Dockerfile --tag roydebiejs/news-hyperlocalizer:${{ env.tag }}
 
       - name: Push to Docker Hub
-        run: docker push roydebiejs/news-hyperlocalizer:${{steps.version.outputs.tag}}
+        run: docker push roydebiejs/news-hyperlocalizer:${{ env.tag }}
