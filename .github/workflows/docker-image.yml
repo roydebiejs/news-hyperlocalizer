@@ -11,40 +11,37 @@ jobs:
   Docker:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Convert OWNER to lowercase
+        run: echo "OWNER=$(echo $OWNER | tr '[A-Z]' '[a-z]')" >> $GITHUB_ENV
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
         with:
-          node-version: 18
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GHCR_TOKEN }}
 
-      - name: setup git config
+      - name: Build and push
+        id: build-and-push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: ghcr.io/${{ env.OWNER }}/news_hyperlocalizer
+
+      - name: Make image public
         run: |
-          git config user.name "GitHub Actions Bot"
-          git config user.email "<>"
-
-      - name: Push new version
-        run: git pull
-
-      - name: Dependecies
-        run: npm ci
-
-      - name: Build
-        run: npm run build
-
-      - name: Save version
-        id: version
-        run: echo "tag=$(node -p -e "require('./package.json').version")" >> $GITHUB_ENV
-
-      - name: Increase version
-        run: npm version patch
-
-      - name: Push new version
-        run: git push
-
-      - name: Login to DockerHub Registry
-        run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
-
-      - name: Build Docker image
-        run: docker build . --file Dockerfile --tag roydebie2000/news-hyperlocalizer:${{ env.tag }}
-
-      - name: Push to Docker Hub
-        run: docker push roydebie2000/news-hyperlocalizer:${{ env.tag }}
+          PACKAGE_VERSION=$(echo ${{ steps.build-and-push.outputs.digest }} | cut -d : -f 2)
+          curl -X PATCH \
+            -H "Authorization: bearer ${{ secrets.GHCR_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/user/packages/container/${{ env.OWNER }}/news_hyperlocalizer/versions/$PACKAGE_VERSION \
+            -d '{"visibility":"public"}'
