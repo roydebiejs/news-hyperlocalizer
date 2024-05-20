@@ -15,8 +15,12 @@ export default function StoriesTable() {
         },
       })
       .then(async function (response) {
-        setStories(response.data.results);
-        console.log(response.data.results);
+        if (response.data.results) {
+          setStories(response.data.results);
+          console.log(response.data.results);
+        } else {
+          console.log("No results found");
+        }
       })
       .catch(() => {
         console.log("Error on Authentication");
