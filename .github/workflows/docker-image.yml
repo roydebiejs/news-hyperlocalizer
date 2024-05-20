@@ -43,8 +43,12 @@ jobs:
       - name: Login to DockerHub Registry
         run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
 
-      - name: Build Docker image
-        run: docker build . --file Dockerfile --tag roydebie2000/news-hyperlocalizer:${{ env.tag }} --platform linux/amd64,linux/arm64
-
-      - name: Push to Docker Hub
-        run: docker push roydebie2000/news-hyperlocalizer:${{ env.tag }}
+      - name: Build and push
+        id: build-and-push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: roydebie2000/news-hyperlocalizer:${{ env.tag }}
