@@ -43,5 +43,5 @@ jobs:
           curl -X PATCH \
             -H "Authorization: Bearer ${{ secrets.GHCR_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com/orgs/${{ env.OWNER }}/packages/container/news-hyperlocalizer/versions/$IMAGE_ID \
+            https://api.github.com/user/packages/container/news-hyperlocalizer/versions/$IMAGE_ID \
             -d '{"visibility":"public"}'
