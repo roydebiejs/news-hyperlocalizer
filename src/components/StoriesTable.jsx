@@ -6,7 +6,7 @@ export default function StoriesTable() {
   const [stories, setStories] = useState([]);
   const navigate = useNavigate();
 
-  const getSources = async () => {
+  const getStories = async () => {
     await axios
       .get(import.meta.env.VITE_API_URL + "/api/stories/?page=1", {
         auth: {
@@ -24,7 +24,7 @@ export default function StoriesTable() {
   };
 
   useEffect(() => {
-    getSources();
+    getStories();
   }, []);
   return (
     <div className="px-4 sm:px-6 lg:px-8">

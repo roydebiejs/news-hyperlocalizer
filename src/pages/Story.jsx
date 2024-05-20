@@ -7,7 +7,7 @@ export default function Story() {
   const [story, setStory] = useState({});
   const navigate = useNavigate();
 
-  const getSources = async () => {
+  const getStoryDetails = async () => {
     await axios
       .get(import.meta.env.VITE_API_URL + "/api/stories/" + id, {
         auth: {
@@ -25,7 +25,7 @@ export default function Story() {
   };
 
   useEffect(() => {
-    getSources();
+    getStoryDetails();
   }, []);
   return (
     <>
