@@ -40,7 +40,7 @@ jobs:
         run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
 
       - name: Build Docker image
-        run: docker build . --file Dockerfile --tag roydebiejs/news-hyperlocalizer:latest
+        run: docker build . --file Dockerfile --tag roydebie2000/news-hyperlocalizer
 
       - name: Push to Docker Hub
-        run: docker push roydebiejs/news-hyperlocalizer:latest
+        run: docker push roydebie2000/news-hyperlocalizer
