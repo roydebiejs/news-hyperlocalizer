@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function NewsTable() {
+export default function StoriesTable() {
   const [stories, setStories] = useState([]);
   const navigate = useNavigate();
 
@@ -76,6 +76,13 @@ export default function NewsTable() {
                       </td>
                     </tr>
                   ))}
+                  {!stories.length && (
+                    <tr>
+                      <td colSpan="2" className="text-center py-4">
+                        Geen nieuwsitems gevonden.
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>

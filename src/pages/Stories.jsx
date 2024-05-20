@@ -1,9 +1,9 @@
-import NewsTable from "../components/NewsTable";
+import StoriesTable from "../components/StoriesTable";
 
 export default function Stories() {
   return (
     <>
-      <NewsTable />
+      <StoriesTable />
     </>
   );
 }
