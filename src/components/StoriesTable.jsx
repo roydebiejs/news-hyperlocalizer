@@ -60,22 +60,23 @@ export default function StoriesTable() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 bg-white">
-                  {stories.map((story) => (
-                    <tr
-                      key={story.id}
-                      onClick={() => {
-                        navigate(`/stories/${story.id}`);
-                      }}
-                      className="cursor-pointer hover:bg-gray-50"
-                    >
-                      <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                        {story.title}
-                      </td>
-                      <td className="whitespace-nowrap py-4 pr-4 text-sm text-gray-500">
-                        {story.author}
-                      </td>
-                    </tr>
-                  ))}
+                  {stories &&
+                    stories.map((story) => (
+                      <tr
+                        key={story.id}
+                        onClick={() => {
+                          navigate(`/stories/${story.id}`);
+                        }}
+                        className="cursor-pointer hover:bg-gray-50"
+                      >
+                        <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
+                          {story.title}
+                        </td>
+                        <td className="whitespace-nowrap py-4 pr-4 text-sm text-gray-500">
+                          {story.author}
+                        </td>
+                      </tr>
+                    ))}
                   {!stories.length && (
                     <tr>
                       <td colSpan="2" className="text-center py-4">
