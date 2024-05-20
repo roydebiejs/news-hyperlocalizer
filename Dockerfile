@@ -1,5 +1,8 @@
-# Use an updated official Node.js runtime as a parent image
+# Use an updated official Node.js runtime as a parent image and specify the platform
 FROM --platform=linux/arm64 node:20-alpine
+
+# Install build tools and dependencies
+RUN apk add --no-cache python3 make g++ 
 
 # Set the working directory in the container
 WORKDIR /app
