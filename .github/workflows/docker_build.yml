@@ -12,7 +12,7 @@ jobs:
       OWNER: ${{ github.repository_owner }}
     steps:
       - name: Convert OWNER to lowercase
-        run: echo "OWNER=$(echo $OWNER | tr '[A-Z]' '[a-z]')" >> $GITHUB_ENV
+        run: echo "OWNER=$(echo $OWNER | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
 
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -35,13 +35,13 @@ jobs:
           file: ./Dockerfile
           push: true
           platforms: linux/amd64,linux/arm64
-          tags: ghcr.io/${{ env.OWNER }}/news-hyperlocalizer
+          tags: ghcr.io/${{ env.OWNER }}/news-hyperlocalizer:latest
 
       - name: Make image public
         run: |
-          PACKAGE_VERSION=$(echo ${{ steps.build-and-push.outputs.digest }} | cut -d : -f 2)
+          IMAGE_ID=$(echo ${{ steps.build-and-push.outputs.digest }} | cut -d ':' -f 2)
           curl -X PATCH \
-            -H "Authorization: bearer ${{ secrets.GHCR_TOKEN }}" \
+            -H "Authorization: Bearer ${{ secrets.GHCR_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com/user/packages/container/${{ env.OWNER }}/news-hyperlocalizer/versions/$PACKAGE_VERSION \
+            https://api.github.com/orgs/${{ env.OWNER }}/packages/container/news-hyperlocalizer/versions/$IMAGE_ID \
             -d '{"visibility":"public"}'
