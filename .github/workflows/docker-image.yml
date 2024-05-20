@@ -21,7 +21,7 @@ jobs:
           git config user.name "GitHub Actions Bot"
           git config user.email "<>"
 
-      - name: Pull new version
+      - name: Push new version
         run: git pull
 
       - name: Dependecies
@@ -29,6 +29,10 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      - name: Save version
+        id: version
+        run: echo "tag=$(node -p -e "require('./package.json').version")" >> $GITHUB_ENV
 
       - name: Increase version
         run: npm version patch
@@ -40,7 +44,7 @@ jobs:
         run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
 
       - name: Build Docker image
-        run: docker build . --file Dockerfile --tag roydebie2000/news-hyperlocalizer
+        run: docker build . --file Dockerfile --tag roydebie2000/news-hyperlocalizer:${{ env.tag }}
 
       - name: Push to Docker Hub
-        run: docker push roydebie2000/news-hyperlocalizer
+        run: docker push roydebie2000/news-hyperlocalizer:${{ env.tag }}
