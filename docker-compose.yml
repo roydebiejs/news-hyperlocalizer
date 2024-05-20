@@ -9,3 +9,8 @@ services:
     volumes:
       - .:/app
       - /app/node_modules
+    environment:
+      - VITE_API_URL=http://localhost:8000
+      - VITE_AUTH_USERNAME=api
+      - VITE_AUTH_PASSWORD=aP1
+      - NODE_ENV=development
