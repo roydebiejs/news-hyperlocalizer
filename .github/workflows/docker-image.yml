@@ -21,6 +21,9 @@ jobs:
           git config user.name "GitHub Actions Bot"
           git config user.email "<>"
 
+      - name: Pull new version
+        run: git pull
+
       - name: Dependecies
         run: npm ci
 
