@@ -31,6 +31,11 @@ jobs:
           echo "RewriteCond %{REQUEST_FILENAME} !-f" >> dist/.htaccess
           echo "RewriteRule ^ index.html [QSA,L]" >> dist/.htaccess
 
+      - name: Configure Git
+        run: |
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "GitHub Actions"
+
       - name: Deploy to GitHub Pages
         run: npx gh-pages -d dist
         env:
