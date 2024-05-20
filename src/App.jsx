@@ -10,7 +10,7 @@ import Nav from "./components/Nav";
 export default function App() {
   return (
     <>
-      <BrowserRouter>
+      <BrowserRouter basename="/news-hyperlocalizer">
         <div>
           <Nav
             page={
