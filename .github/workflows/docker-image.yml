@@ -47,4 +47,4 @@ jobs:
         run: docker build . --file Dockerfile --tag roydebiejs/news-hyperlocalizer:${{ env.tag }}
 
       - name: Push to Docker Hub
-        run: docker push roydebiejs/news-hyperlocalizer:${{ env.tag }}
+        run: docker push roydebiejs/news-hyperlocalizer:latest
