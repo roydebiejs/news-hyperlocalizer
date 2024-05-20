@@ -16,7 +16,7 @@ jobs:
         with:
           node-version: 18
 
-      - name: setup git config
+      - name: Setup Git Config
         run: |
           git config user.name "GitHub Actions Bot"
           git config user.email "<>"
@@ -43,12 +43,22 @@ jobs:
       - name: Login to DockerHub Registry
         run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
 
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          version: ${{ inputs.buildx-version || env.BUILDX_VERSION }}
+          driver-opts: |
+            network=host
+            image=${{ inputs.buildkit-image || env.BUILDKIT_IMAGE }}
+
       - name: Build and push
         id: build-and-push
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./Dockerfile
+          builder: ${{ steps.buildx.outputs.name }}
           push: true
           platforms: linux/amd64,linux/arm64
           tags: roydebie2000/news-hyperlocalizer:${{ env.tag }}
