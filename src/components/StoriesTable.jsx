@@ -60,7 +60,7 @@ export default function StoriesTable() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 bg-white">
-                  {stories &&
+                  {stories.length ? (
                     stories.map((story) => (
                       <tr
                         key={story.id}
@@ -76,7 +76,14 @@ export default function StoriesTable() {
                           {story.author}
                         </td>
                       </tr>
-                    ))}
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="2" className="text-center py-4">
+                        Loading...
+                      </td>
+                    </tr>
+                  )}
                   {!stories.length && (
                     <tr>
                       <td colSpan="2" className="text-center py-4">
