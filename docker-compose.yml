@@ -9,6 +9,5 @@ services:
     volumes:
       - .:/app
       - /app/node_modules
-    environment:
-      - VITE_API_URL=http://localhost:8000
-      - VITE_AUTH_TOKEN=195479750494cd5124e8481a607347b4b8abb48c
+    env_file:
+      - .env
