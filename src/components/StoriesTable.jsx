@@ -1,23 +1,24 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function StoriesTable() {
   const [stories, setStories] = useState([]);
   const navigate = useNavigate();
 
-  const getStories = async () => {
+  const getStories = useCallback(async () => {
+    const apiUrl = import.meta.env.VITE_API_URL;
+    const authToken = import.meta.env.VITE_AUTH_TOKEN;
+
     await axios
-      .get(import.meta.env.VITE_API_URL + "/api/stories/?page=1", {
-        auth: {
-          username: import.meta.env.VITE_AUTH_USERNAME,
-          password: import.meta.env.VITE_AUTH_PASSWORD,
+      .get(`${apiUrl}/api/stories?page=1`, {
+        headers: {
+          Authorization: `Token ${authToken}`,
         },
       })
       .then(async function (response) {
         if (response.data.results) {
           setStories(response.data.results);
-          console.log(response.data.results);
         } else {
           console.log("No results found");
         }
@@ -25,11 +26,11 @@ export default function StoriesTable() {
       .catch(() => {
         console.log("Error on Authentication");
       });
-  };
+  }, []);
 
   useEffect(() => {
     getStories();
-  }, []);
+  }, [getStories]);
   return (
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="sm:flex sm:items-center">

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -7,26 +7,32 @@ export default function Story() {
   const [story, setStory] = useState({});
   const navigate = useNavigate();
 
-  const getStoryDetails = async () => {
+  const getStory = useCallback(async () => {
+    const apiUrl = import.meta.env.VITE_API_URL;
+    const authToken = import.meta.env.VITE_AUTH_TOKEN;
+
     await axios
-      .get(import.meta.env.VITE_API_URL + "/api/stories/" + id, {
-        auth: {
-          username: import.meta.env.VITE_AUTH_USERNAME,
-          password: import.meta.env.VITE_AUTH_PASSWORD,
+      .get(`${apiUrl}/api/stories/${id}`, {
+        headers: {
+          Authorization: `Token ${authToken}`,
         },
       })
       .then(async function (response) {
-        setStory(response.data);
-        console.log(response.data);
+        if (response.data) {
+          setStory(response.data);
+        } else {
+          console.log("No story found");
+        }
       })
       .catch(() => {
         console.log("Error on Authentication");
       });
-  };
+  }, [id]);
 
   useEffect(() => {
-    getStoryDetails();
-  }, []);
+    getStory();
+  }, [getStory]);
+
   return (
     <>
       <button
