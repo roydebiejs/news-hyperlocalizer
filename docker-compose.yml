@@ -11,6 +11,4 @@ services:
       - /app/node_modules
     environment:
       - VITE_API_URL=http://localhost:8000
-      - VITE_AUTH_USERNAME=api
-      - VITE_AUTH_PASSWORD=aP1
-      - NODE_ENV=development
+      - VITE_AUTH_TOKEN=195479750494cd5124e8481a607347b4b8abb48c
