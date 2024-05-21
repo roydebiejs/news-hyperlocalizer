@@ -7,10 +7,10 @@ export default function Story() {
   const [story, setStory] = useState({});
   const navigate = useNavigate();
 
-  const getStory = useCallback(async () => {
-    const apiUrl = import.meta.env.VITE_API_URL;
-    const authToken = import.meta.env.VITE_AUTH_TOKEN;
+  const apiUrl = import.meta.env.VITE_API_URL;
+  const authToken = sessionStorage.getItem("token");
 
+  const getStory = useCallback(async () => {
     await axios
       .get(`${apiUrl}/api/stories/${id}`, {
         headers: {
@@ -27,7 +27,7 @@ export default function Story() {
       .catch(() => {
         console.log("Error on Authentication");
       });
-  }, [id]);
+  }, [apiUrl, authToken, id]);
 
   useEffect(() => {
     getStory();

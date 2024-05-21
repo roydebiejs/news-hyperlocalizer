@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   react:
-    container_name: "News Hyperlocalizer" # Name of the container
+    container_name: "NewsHyperlocalizer" # Name of the container
     build:
       context: .
     ports:

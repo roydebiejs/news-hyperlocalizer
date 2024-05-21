@@ -5,11 +5,21 @@ import { useNavigate } from "react-router-dom";
 export default function StoriesTable() {
   const [stories, setStories] = useState([]);
   const navigate = useNavigate();
+  const apiUrl = import.meta.env.VITE_API_URL;
+  const authToken = sessionStorage.getItem("token");
+
+  const getToken = useCallback(async () => {
+    await axios
+      .post(`${apiUrl}/api/token/`, {
+        username: "api",
+        password: "aP1",
+      })
+      .then(function (response) {
+        sessionStorage.setItem("token", response.data.token);
+      });
+  }, [apiUrl]);
 
   const getStories = useCallback(async () => {
-    const apiUrl = import.meta.env.VITE_API_URL;
-    const authToken = import.meta.env.VITE_AUTH_TOKEN;
-
     await axios
       .get(`${apiUrl}/api/stories?page=1`, {
         headers: {
@@ -23,10 +33,15 @@ export default function StoriesTable() {
           console.log("No results found");
         }
       })
-      .catch(() => {
+      .catch(async () => {
         console.log("Error on Authentication");
+        await getToken();
+        // reload component
+        navigate("/stories", {
+          replace: true,
+        });
       });
-  }, []);
+  }, [apiUrl, authToken, getToken, navigate]);
 
   useEffect(() => {
     getStories();
