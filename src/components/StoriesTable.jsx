@@ -1,12 +1,18 @@
 import axios from "axios";
 import { useEffect, useState, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export default function StoriesTable() {
   const [stories, setStories] = useState([]);
+  const [totalResults, setTotalResults] = useState(0);
+  const location = useLocation();
   const navigate = useNavigate();
   const apiUrl = import.meta.env.VITE_API_URL;
   const authToken = sessionStorage.getItem("token");
+
+  // Get initial page number from location state or default to 1
+  const initialPage = location.state?.page || 1;
+  const [page, setPage] = useState(initialPage);
 
   const getToken = useCallback(async () => {
     await axios
@@ -21,14 +27,15 @@ export default function StoriesTable() {
 
   const getStories = useCallback(async () => {
     await axios
-      .get(`${apiUrl}/api/stories?page=1`, {
+      .get(`${apiUrl}/api/stories?page=${page}`, {
         headers: {
           Authorization: `Token ${authToken}`,
         },
       })
-      .then(async function (response) {
+      .then(function (response) {
         if (response.data.results) {
           setStories(response.data.results);
+          setTotalResults(response.data.count); // Assuming the API response contains a count field
         } else {
           console.log("No results found");
         }
@@ -36,16 +43,18 @@ export default function StoriesTable() {
       .catch(async () => {
         console.log("Error on Authentication");
         await getToken();
-        // reload component
         navigate("/stories", {
           replace: true,
         });
       });
-  }, [apiUrl, authToken, getToken, navigate]);
+  }, [apiUrl, authToken, getToken, navigate, page]);
 
   useEffect(() => {
     getStories();
-  }, [getStories]);
+  }, [getStories, page]);
+
+  const totalPages = Math.ceil(totalResults / 10);
+
   return (
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="sm:flex sm:items-center">
@@ -85,7 +94,9 @@ export default function StoriesTable() {
                       <tr
                         key={story.id}
                         onClick={() => {
-                          navigate(`/stories/${story.id}`);
+                          navigate(`/stories/${story.id}`, {
+                            state: { page },
+                          });
                         }}
                         className="cursor-pointer hover:bg-gray-50"
                       >
@@ -100,19 +111,46 @@ export default function StoriesTable() {
                   ) : (
                     <tr>
                       <td colSpan="2" className="text-center py-4">
-                        Loading...
-                      </td>
-                    </tr>
-                  )}
-                  {!stories.length && (
-                    <tr>
-                      <td colSpan="2" className="text-center py-4">
                         Geen nieuwsitems gevonden.
                       </td>
                     </tr>
                   )}
                 </tbody>
               </table>
+              <nav
+                className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6"
+                aria-label="Pagination"
+              >
+                <div className="hidden sm:block">
+                  <p className="text-sm text-gray-700">
+                    <span className="font-medium">{(page - 1) * 10 + 1}</span>{" "}
+                    tot{" "}
+                    <span className="font-medium">
+                      {Math.min(page * 10, totalResults)}
+                    </span>{" "}
+                    van <span className="font-medium">{totalResults}</span>{" "}
+                    resultaten
+                  </p>
+                </div>
+                <div className="flex flex-1 justify-between sm:justify-end">
+                  <button
+                    className="relative inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-offset-0"
+                    onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+                    disabled={page === 1}
+                  >
+                    Terug
+                  </button>
+                  <button
+                    className="relative ml-3 inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-offset-0"
+                    onClick={() =>
+                      setPage((prev) => Math.min(prev + 1, totalPages))
+                    }
+                    disabled={page === totalPages}
+                  >
+                    Volgende
+                  </button>
+                </div>
+              </nav>
             </div>
           </div>
         </div>
