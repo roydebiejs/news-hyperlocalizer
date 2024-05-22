@@ -5,7 +5,6 @@ import {
   Bars3Icon,
   XMarkIcon,
   HomeIcon,
-  UserGroupIcon,
   ClipboardDocumentListIcon,
 } from "@heroicons/react/24/outline";
 
@@ -13,11 +12,6 @@ import { Link } from "react-router-dom";
 
 const navigation = [
   { name: "Nieuws", href: "/stories", icon: HomeIcon },
-  {
-    name: "Taaktoewijzing",
-    href: "/tasks",
-    icon: UserGroupIcon,
-  },
   {
     name: "Bronbeheer",
     href: "/sources",
