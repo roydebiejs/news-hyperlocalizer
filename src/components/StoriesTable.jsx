@@ -34,6 +34,7 @@ export default function StoriesTable() {
       })
       .then(function (response) {
         if (response.data.results) {
+          console.log(response.data.results[0]);
           setStories(response.data.results);
           setTotalResults(response.data.count); // Assuming the API response contains a count field
         } else {
@@ -54,104 +55,127 @@ export default function StoriesTable() {
   }, [getStories, page]);
 
   const totalPages = Math.ceil(totalResults / 10);
-
   return (
-    <div className="px-4 sm:px-6 lg:px-8">
-      <div className="sm:flex sm:items-center">
-        <div className="sm:flex-auto">
-          <h1 className="text-base font-semibold leading-6 text-gray-900">
-            Nieuwsitems
-          </h1>
-          <p className="mt-2 text-sm text-gray-700">
-            Informatie over de laatste nieuwsitems.
-          </p>
-        </div>
-      </div>
+    <div className="px-8 sm:px-12 lg:px-16">
       <div className="mt-8 flow-root">
         <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-            <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
-              <table className="min-w-full divide-y divide-gray-300">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th
-                      scope="col"
-                      className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
-                    >
-                      Titel
-                    </th>
-                    <th
-                      scope="col"
-                      className="py-3.5 pr-4 text-left text-sm font-semibold text-gray-900"
-                    >
-                      Auteur
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200 bg-white">
-                  {stories.length ? (
-                    stories.map((story) => (
-                      <tr
-                        key={story.id}
+            <table className="min-w-full divide-y divide-gray-300">
+              <thead>
+                <tr>
+                  <th
+                    scope="col"
+                    className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0"
+                  >
+                    Nieuwsitem
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  >
+                    Iets
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  >
+                    Labels
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  >
+                    Datum
+                  </th>
+                  <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-0">
+                    <span className="sr-only">Bekijk</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200 bg-white">
+                {stories.map((story) => (
+                  <tr key={story.id} className="bg-gray-100">
+                    <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
+                      <div className="flex items-center">
+                        <div className="h-11 w-11 flex-shrink-0">
+                          <img
+                            className="h-11 w-11 rounded-md object-cover"
+                            src={story.image}
+                            alt=""
+                          />
+                        </div>
+                        <div className="ml-4">
+                          <div className="font-medium text-gray-900">
+                            {story.title}
+                          </div>
+                          <div className="mt-1 text-gray-500">
+                            {story.summary}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                      <div className="text-gray-900">Ja iets </div>
+                      <div className="mt-1 text-gray-500">anders</div>
+                    </td>
+                    <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                      {story.labels.map((label) => (
+                        <span
+                          key={label}
+                          className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20"
+                        >
+                          {label}
+                        </span>
+                      ))}
+                    </td>
+                    <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                      {story.created}
+                    </td>
+                    <td className="relative whitespace-nowrap py-5 pl-3 text-left text-sm font-medium sm:pr-0">
+                      <button
                         onClick={() => {
                           navigate(`/stories/${story.id}`, {
                             state: { page },
                           });
                         }}
-                        className="cursor-pointer hover:bg-gray-50"
+                        className="text-indigo-600 hover:text-indigo-900"
                       >
-                        <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                          {story.title}
-                        </td>
-                        <td className="whitespace-nowrap py-4 pr-4 text-sm text-gray-500">
-                          {story.author}
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="2" className="text-center py-4">
-                        Geen nieuwsitems gevonden.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-              <nav
-                className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6"
-                aria-label="Pagination"
-              >
-                <div className="hidden sm:block">
-                  <p className="text-sm text-gray-700">
-                    <span className="font-medium">{(page - 1) * 10 + 1}</span>{" "}
-                    tot{" "}
-                    <span className="font-medium">
-                      {Math.min(page * 10, totalResults)}
-                    </span>{" "}
-                    van <span className="font-medium">{totalResults}</span>{" "}
-                    resultaten
-                  </p>
-                </div>
-                <div className="flex flex-1 justify-between sm:justify-end">
-                  <button
-                    className="relative inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-offset-0"
-                    onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-                    disabled={page === 1}
-                  >
-                    Terug
-                  </button>
-                  <button
-                    className="relative ml-3 inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-offset-0"
-                    onClick={() =>
-                      setPage((prev) => Math.min(prev + 1, totalPages))
-                    }
-                    disabled={page === totalPages}
-                  >
-                    Volgende
-                  </button>
-                </div>
-              </nav>
-            </div>
+                        Bekijk<span className="sr-only">, {story.title}</span>
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <nav
+              className="flex items-center justify-between border-t border-gray-200 bg-gray-100 px-4 py-3 sm:px-6"
+              aria-label="Pagination"
+            >
+              <div className="hidden sm:block">
+                <p className="text-sm text-gray-700">
+                  Pagina <span className="font-medium">{page}</span> van{" "}
+                  <span className="font-medium">{totalPages}</span>
+                </p>
+              </div>
+              <div className="flex flex-1 justify-between sm:justify-end">
+                <button
+                  className="relative inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold ring-1 ring-inset ring-gray-300 hover:bg-indigo-900 focus-visible:outline-offset-0 text-white"
+                  onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+                  disabled={page === 1}
+                >
+                  Terug
+                </button>
+                <button
+                  className="relative ml-3 inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold ring-1 ring-inset ring-gray-300 hover:bg-indigo-900 focus-visible:outline-offset-0 text-white"
+                  onClick={() =>
+                    setPage((prev) => Math.min(prev + 1, totalPages))
+                  }
+                  disabled={page === totalPages}
+                >
+                  Volgende
+                </button>
+              </div>
+            </nav>
           </div>
         </div>
       </div>
