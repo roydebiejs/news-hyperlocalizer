@@ -144,26 +144,45 @@ export default function StoriesTable() {
       <div className="px-8 sm:px-12 lg:px-16">
         <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+            <div>
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium leading-6 text-gray-900"
+              >
+                Zoek op basis van titel
+              </label>
+              <div className="relative mt-2">
+                <input
+                  type="text"
+                  name="search"
+                  id="search"
+                  className="peer block w-full border-0 bg-gray-50 py-1.5 text-gray-900 focus:ring-0 text-sm sm:leading-6"
+                  placeholder="PSV is landskampioen"
+                />
+                <div
+                  className="absolute inset-x-0 bottom-0 border-t border-gray-300 peer-focus:border-t-2 peer-focus:border-indigo-600"
+                  aria-hidden="true"
+                />
+              </div>
+            </div>
             <nav
               className="flex items-center justify-between border-b border-gray-300 bg-gray-100 px-4 py-3 sm:px-6"
               aria-label="Pagination"
             >
-              <div className="hidden sm:block">
-                <p className="text-sm text-gray-700">
-                  Pagina <span className="font-medium">{page}</span> van{" "}
-                  <span className="font-medium">{totalPages}</span>
-                </p>
-              </div>
-              <div className="flex flex-1 justify-between sm:justify-end">
+              <div className="flex flex-1 justify-between sm:justify-start">
                 <button
-                  className="relative inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold ring-1 ring-inset ring-gray-300 hover:bg-indigo-900 focus-visible:outline-offset-0 text-white"
+                  className={`relative inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold ring-1 ring-inset ring-gray-300 hover:bg-indigo-900 focus-visible:outline-offset-0 text-white ${
+                    page === 1 ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
                   onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
                   disabled={page === 1}
                 >
                   Terug
                 </button>
                 <button
-                  className="relative ml-3 inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold ring-1 ring-inset ring-gray-300 hover:bg-indigo-900 focus-visible:outline-offset-0 text-white"
+                  className={`relative ml-3 inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold ring-1 ring-inset ring-gray-300 hover:bg-indigo-900 focus-visible:outline-offset-0 text-white ${
+                    page === totalPages ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
                   onClick={() =>
                     setPage((prev) => Math.min(prev + 1, totalPages))
                   }
@@ -171,6 +190,12 @@ export default function StoriesTable() {
                 >
                   Volgende
                 </button>
+              </div>
+              <div className="hidden sm:block">
+                <p className="text-sm text-gray-700">
+                  Pagina <span className="font-medium">{page}</span> van{" "}
+                  <span className="font-medium">{totalPages}</span>
+                </p>
               </div>
             </nav>
             <table className="min-w-full divide-y divide-gray-300">
@@ -190,19 +215,19 @@ export default function StoriesTable() {
                   </th>
                   <th
                     scope="col"
-                    className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 hidden sm:table-cell"
                   >
                     Bron
                   </th>
                   <th
                     scope="col"
-                    className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 hidden lg:table-cell"
                   >
                     Labels
                   </th>
                   <th
                     scope="col"
-                    className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 hidden xs:table-cell"
                   >
                     Auteur
                   </th>
@@ -229,17 +254,19 @@ export default function StoriesTable() {
                       <div className="font-medium text-gray-900">
                         {story.title}
                       </div>
-                      <div className="mt-1 text-gray-500">{story.summary}</div>
+                      <div className="mt-1 text-gray-500 hidden md:block">
+                        {story.summary}
+                      </div>
                     </td>
-                    <td className="whitespace-normal px-3 py-2.5 text-sm text-gray-500 max-w-[15rem]">
+                    <td className="whitespace-normal px-3 py-2.5 text-sm text-gray-500 max-w-[15rem] hidden sm:table-cell">
                       <div className="font-medium text-gray-900">
                         {story.sourceName}
                       </div>
-                      <div className="mt-1 text-gray-500">
+                      <div className="mt-1 text-gray-500 hidden 2xl:block">
                         {story.sourceWebsite}
                       </div>
                     </td>
-                    <td className="whitespace-normal px-3 py-2.5 text-sm text-gray-500 max-w-[15rem]">
+                    <td className="whitespace-normal px-3 py-2.5 text-sm text-gray-500 max-w-[15rem] hidden lg:table-cell">
                       {story.labels.map((label) => (
                         <span
                           key={label + randomId()}
@@ -271,7 +298,7 @@ export default function StoriesTable() {
                         </span>
                       ))}
                     </td>
-                    <td className="whitespace-nowrap px-3 py-2.5 text-sm text-gray-500">
+                    <td className="whitespace-nowrap px-3 py-2.5 text-sm text-gray-500 hidden xs:table-cell">
                       {story.author}
                     </td>
                     <td className="relative whitespace-nowrap py-2.5 pl-3 text-left text-sm font-medium sm:pr-0">
