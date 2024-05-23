@@ -1,11 +1,18 @@
 import axios from "axios";
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import {
+  MapPinIcon,
+  UserGroupIcon,
+  TagIcon,
+  ChartPieIcon,
+} from "@heroicons/react/24/outline";
 
 export default function StoriesTable() {
   const [stories, setStories] = useState([]);
   const [totalResults, setTotalResults] = useState(0);
   const [sources, setSources] = useState({});
+  const [labels, setLabels] = useState({});
   const location = useLocation();
   const navigate = useNavigate();
   const apiUrl = import.meta.env.VITE_API_URL;
@@ -52,6 +59,32 @@ export default function StoriesTable() {
     [apiUrl, authToken, sources]
   );
 
+  const getLabel = useCallback(
+    async (labelId) => {
+      if (labels[labelId]) {
+        return labels[labelId]; // Return cached label if available
+      }
+      try {
+        const response = await axios.get(`${apiUrl}/api/labels/${labelId}`, {
+          headers: {
+            Authorization: `Token ${authToken}`,
+          },
+        });
+        const labelName = response.data.name;
+        const labelType = response.data.type;
+        setLabels((prevLabels) => ({
+          ...prevLabels,
+          [labelId]: { labelName, labelType },
+        }));
+        return { labelName, labelType };
+      } catch (error) {
+        console.log("Error when fetching label");
+        return "No label found";
+      }
+    },
+    [apiUrl, authToken, labels]
+  );
+
   const getStories = useCallback(async () => {
     await axios
       .get(`${apiUrl}/api/stories?page=${page}`, {
@@ -71,7 +104,20 @@ export default function StoriesTable() {
               };
             })
           );
-          setStories(storiesWithSources);
+          const storiesWithLabels = await Promise.all(
+            storiesWithSources.map(async (story) => {
+              const labels = await Promise.all(
+                story.labels.map(async (labelId) => {
+                  return getLabel(labelId);
+                })
+              );
+              return {
+                ...story,
+                labels,
+              };
+            })
+          );
+          setStories(storiesWithLabels);
           setTotalResults(response.data.count); // Assuming the API response contains a count field
         } else {
           console.log("No results found");
@@ -84,11 +130,13 @@ export default function StoriesTable() {
           replace: true,
         });
       });
-  }, [apiUrl, authToken, getSource, getToken, navigate, page]);
+  }, [apiUrl, authToken, getSource, getToken, navigate, page, getLabel]);
 
   useEffect(() => {
     getStories();
   }, [getStories, page]);
+
+  const randomId = () => Math.random().toString(36).substr(2, 9);
 
   const totalPages = Math.ceil(totalResults / 10);
   return (
@@ -161,13 +209,35 @@ export default function StoriesTable() {
                       {story.sourceWebsite}
                     </div>
                   </td>
-                  <td className="whitespace-nowrap px-3 py-2.5 text-sm text-gray-500">
+                  <td className="whitespace-normal px-3 py-2.5 text-sm text-gray-500 max-w-[15rem]">
                     {story.labels.map((label) => (
                       <span
-                        key={label}
-                        className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20"
+                        key={label + randomId()}
+                        className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset mr-1 mb-1 ${
+                          label.labelType == "LOCATION"
+                            ? "bg-blue-100 text-blue-800 ring-blue-600/20"
+                            : label.labelType == "AUDIENCE"
+                            ? "bg-green-100 text-green-800 ring-green-600/20"
+                            : label.labelType == "TOPIC"
+                            ? "bg-yellow-100 text-yellow-800 ring-yellow-600/20"
+                            : label.labelType == "CATEGORY"
+                            ? "bg-purple-100 text-purple-800 ring-purple-600/20"
+                            : "bg-gray-100 text-gray-800"
+                        }`}
                       >
-                        {label}
+                        {label.labelType == "LOCATION" ? (
+                          <MapPinIcon className="h-4 w-4 mr-1" />
+                        ) : null}
+                        {label.labelType == "AUDIENCE" ? (
+                          <UserGroupIcon className="h-4 w-4 mr-1" />
+                        ) : null}
+                        {label.labelType == "TOPIC" ? (
+                          <TagIcon className="h-4 w-4 mr-1" />
+                        ) : null}
+                        {label.labelType == "CATEGORY" ? (
+                          <ChartPieIcon className="h-4 w-4 mr-1" />
+                        ) : null}
+                        {label.labelName}
                       </span>
                     ))}
                   </td>
