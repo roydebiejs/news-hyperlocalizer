@@ -144,6 +144,35 @@ export default function StoriesTable() {
       <div className="px-8 sm:px-12 lg:px-16">
         <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+            <nav
+              className="flex items-center justify-between border-b border-gray-300 bg-gray-100 px-4 py-3 sm:px-6"
+              aria-label="Pagination"
+            >
+              <div className="hidden sm:block">
+                <p className="text-sm text-gray-700">
+                  Pagina <span className="font-medium">{page}</span> van{" "}
+                  <span className="font-medium">{totalPages}</span>
+                </p>
+              </div>
+              <div className="flex flex-1 justify-between sm:justify-end">
+                <button
+                  className="relative inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold ring-1 ring-inset ring-gray-300 hover:bg-indigo-900 focus-visible:outline-offset-0 text-white"
+                  onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+                  disabled={page === 1}
+                >
+                  Terug
+                </button>
+                <button
+                  className="relative ml-3 inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold ring-1 ring-inset ring-gray-300 hover:bg-indigo-900 focus-visible:outline-offset-0 text-white"
+                  onClick={() =>
+                    setPage((prev) => Math.min(prev + 1, totalPages))
+                  }
+                  disabled={page === totalPages}
+                >
+                  Volgende
+                </button>
+              </div>
+            </nav>
             <table className="min-w-full divide-y divide-gray-300">
               <thead>
                 <tr>
@@ -261,35 +290,6 @@ export default function StoriesTable() {
                 ))}
               </tbody>
             </table>
-            <nav
-              className="flex items-center justify-between border-t border-gray-200 bg-gray-100 px-4 py-3 sm:px-6"
-              aria-label="Pagination"
-            >
-              <div className="hidden sm:block">
-                <p className="text-sm text-gray-700">
-                  Pagina <span className="font-medium">{page}</span> van{" "}
-                  <span className="font-medium">{totalPages}</span>
-                </p>
-              </div>
-              <div className="flex flex-1 justify-between sm:justify-end">
-                <button
-                  className="relative inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold ring-1 ring-inset ring-gray-300 hover:bg-indigo-900 focus-visible:outline-offset-0 text-white"
-                  onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-                  disabled={page === 1}
-                >
-                  Terug
-                </button>
-                <button
-                  className="relative ml-3 inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold ring-1 ring-inset ring-gray-300 hover:bg-indigo-900 focus-visible:outline-offset-0 text-white"
-                  onClick={() =>
-                    setPage((prev) => Math.min(prev + 1, totalPages))
-                  }
-                  disabled={page === totalPages}
-                >
-                  Volgende
-                </button>
-              </div>
-            </nav>
           </div>
         </div>
       </div>
