@@ -94,7 +94,11 @@ export default function StoriesTable() {
       }));
       return { labelName, labelType };
     } catch (error) {
-      console.log("Error when fetching label");
+      console.log("Error on Authentication");
+      await getToken();
+      navigate("/stories", {
+        replace: true,
+      });
       return "No label found";
     }
   }, []);
