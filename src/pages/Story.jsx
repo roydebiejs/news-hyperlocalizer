@@ -40,7 +40,9 @@ export default function Story() {
         type="button"
         className="rounded-md bg-red-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
         onClick={() =>
-          navigate("/stories", { state: { page: location.state.page } })
+          navigate("/stories", {
+            state: { page: location.state.page, search: location.state.search },
+          })
         }
       >
         Terug

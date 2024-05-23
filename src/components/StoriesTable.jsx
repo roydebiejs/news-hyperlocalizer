@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   MapPinIcon,
@@ -13,6 +13,8 @@ export default function StoriesTable() {
   const [totalResults, setTotalResults] = useState(0);
   const [sources, setSources] = useState({});
   const [labels, setLabels] = useState({});
+  const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
   const apiUrl = import.meta.env.VITE_API_URL;
@@ -20,7 +22,24 @@ export default function StoriesTable() {
 
   // Get initial page number from location state or default to 1
   const initialPage = location.state?.page || 1;
+  const searchQuery = location.state?.search || "";
+  useEffect(() => {
+    setSearch(searchQuery);
+  }, [searchQuery]);
+
   const [page, setPage] = useState(initialPage);
+
+  const debounceTimeout = useRef(null);
+
+  useEffect(() => {
+    // Debounce search input
+    if (debounceTimeout.current) {
+      clearTimeout(debounceTimeout.current);
+    }
+    debounceTimeout.current = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 700);
+  }, [search]);
 
   const getToken = useCallback(async () => {
     await axios
@@ -86,8 +105,9 @@ export default function StoriesTable() {
   );
 
   const getStories = useCallback(async () => {
+    const searchParam = debouncedSearch ? `&title=${debouncedSearch}` : "";
     await axios
-      .get(`${apiUrl}/api/stories?page=${page}`, {
+      .get(`${apiUrl}/api/stories?page=${page}${searchParam}`, {
         headers: {
           Authorization: `Token ${authToken}`,
         },
@@ -130,11 +150,11 @@ export default function StoriesTable() {
           replace: true,
         });
       });
-  }, [apiUrl, authToken, getToken, navigate, page]);
+  }, [apiUrl, authToken, debouncedSearch, getLabel, navigate, page]);
 
   useEffect(() => {
     getStories();
-  }, [getStories, page]);
+  }, [getStories, page, debouncedSearch]);
 
   const randomId = () => Math.random().toString(36).substr(2, 9);
 
@@ -156,8 +176,10 @@ export default function StoriesTable() {
                   type="text"
                   name="search"
                   id="search"
+                  value={search}
                   className="peer block w-full border-0 bg-gray-50 py-1.5 text-gray-900 focus:ring-0 text-sm sm:leading-6"
                   placeholder="PSV is landskampioen"
+                  onChange={(e) => setSearch(e.target.value)}
                 />
                 <div
                   className="absolute inset-x-0 bottom-0 border-t border-gray-300 peer-focus:border-t-2 peer-focus:border-indigo-600"
@@ -305,7 +327,7 @@ export default function StoriesTable() {
                       <button
                         onClick={() => {
                           navigate(`/stories/${story.id}`, {
-                            state: { page },
+                            state: { page, search },
                           });
                         }}
                         className="text-indigo-600 hover:text-indigo-900"
