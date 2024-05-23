@@ -34,7 +34,6 @@ export default function StoriesTable() {
       })
       .then(function (response) {
         if (response.data.results) {
-          console.log(response.data.results[0]);
           setStories(response.data.results);
           setTotalResults(response.data.count); // Assuming the API response contains a count field
         } else {
@@ -54,6 +53,24 @@ export default function StoriesTable() {
     getStories();
   }, [getStories, page]);
 
+  // const getSource = async (source) => {
+  //   await axios
+  //     .get(`${apiUrl}/api/sources/${source}`, {
+  //       headers: {
+  //         Authorization: `Token ${authToken}`,
+  //       },
+  //     })
+  //     .then(function (response) {
+  //       if (response.data) {
+  //         return response.data.name;
+  //       }
+  //       return "No source found";
+  //     })
+  //     .catch(async () => {
+  //       console.log("Error when fetching source");
+  //     });
+  // };
+
   const totalPages = Math.ceil(totalResults / 10);
   return (
     <div className="px-8 sm:px-12 lg:px-16">
@@ -67,13 +84,19 @@ export default function StoriesTable() {
                     scope="col"
                     className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0"
                   >
+                    &nbsp;
+                  </th>
+                  <th
+                    scope="col"
+                    className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0"
+                  >
                     Nieuwsitem
                   </th>
                   <th
                     scope="col"
                     className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                   >
-                    Iets
+                    Bron
                   </th>
                   <th
                     scope="col"
@@ -85,7 +108,7 @@ export default function StoriesTable() {
                     scope="col"
                     className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                   >
-                    Datum
+                    Auteur
                   </th>
                   <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-0">
                     <span className="sr-only">Bekijk</span>
@@ -104,19 +127,17 @@ export default function StoriesTable() {
                             alt=""
                           />
                         </div>
-                        <div className="ml-4">
-                          <div className="font-medium text-gray-900">
-                            {story.title}
-                          </div>
-                          <div className="mt-1 text-gray-500">
-                            {story.summary}
-                          </div>
-                        </div>
                       </div>
                     </td>
+                    <td className="whitespace-normal px-3 py-5 text-sm text-gray-500 max-w-xs">
+                      <div className="font-medium text-gray-900">
+                        {story.title}
+                      </div>
+                      <div className="mt-1 text-gray-500">{story.summary}</div>
+                    </td>
                     <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                      <div className="text-gray-900">Ja iets </div>
-                      <div className="mt-1 text-gray-500">anders</div>
+                      <div className="text-gray-900">{story.source}</div>
+                      <div className="mt-1 text-gray-500">{story.url}</div>
                     </td>
                     <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
                       {story.labels.map((label) => (
@@ -129,7 +150,7 @@ export default function StoriesTable() {
                       ))}
                     </td>
                     <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                      {story.created}
+                      {story.author}
                     </td>
                     <td className="relative whitespace-nowrap py-5 pl-3 text-left text-sm font-medium sm:pr-0">
                       <button

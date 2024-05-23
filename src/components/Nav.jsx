@@ -176,7 +176,7 @@ export default function Nav(props) {
             <p className="font-bold">NEWS HYPERLOCALIZER</p>
           </div>
 
-          <main className="py-10">{props.page}</main>
+          <main className="py-5">{props.page}</main>
         </div>
       </div>
     </>
