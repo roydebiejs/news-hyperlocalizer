@@ -9,7 +9,6 @@ import {
 } from "@heroicons/react/24/outline";
 
 export default function StoriesTable() {
-  const [loading, setLoading] = useState(false);
   const [stories, setStories] = useState([]);
   const [totalResults, setTotalResults] = useState(0);
   const [sources, setSources] = useState({});
@@ -87,7 +86,6 @@ export default function StoriesTable() {
   );
 
   const getStories = useCallback(async () => {
-    setLoading(true);
     await axios
       .get(`${apiUrl}/api/stories?page=${page}`, {
         headers: {
@@ -121,7 +119,6 @@ export default function StoriesTable() {
           );
           setStories(storiesWithLabels);
           setTotalResults(response.data.count);
-          setLoading(false);
         } else {
           console.log("No results found");
         }
@@ -144,30 +141,6 @@ export default function StoriesTable() {
   const totalPages = Math.ceil(totalResults / 10);
   return (
     <>
-      {loading ? (
-        <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-90">
-          <svg
-            className="animate-spin h-12 w-12 text-indigo-600"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"
-            ></circle>
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A8 8 0 0112 4v8h-6z"
-            ></path>
-          </svg>
-        </div>
-      ) : null}
       <div className="px-8 sm:px-12 lg:px-16">
         <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
