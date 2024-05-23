@@ -32,6 +32,7 @@ export default function StoriesTable() {
   const debounceTimeout = useRef(null);
 
   useEffect(() => {
+    setPage(initialPage);
     // Debounce search input
     if (debounceTimeout.current) {
       clearTimeout(debounceTimeout.current);
@@ -52,57 +53,51 @@ export default function StoriesTable() {
       });
   }, [apiUrl]);
 
-  const getSource = useCallback(
-    async (sourceId) => {
-      if (sources[sourceId]) {
-        return sources[sourceId]; // Return cached source if available
-      }
-      try {
-        const response = await axios.get(`${apiUrl}/api/sources/${sourceId}`, {
-          headers: {
-            Authorization: `Token ${authToken}`,
-          },
-        });
-        const sourceName = response.data.name;
-        const sourceWebsite = response.data.website;
-        setSources((prevSources) => ({
-          ...prevSources,
-          [sourceId]: { sourceName, sourceWebsite },
-        }));
-        return { sourceName, sourceWebsite };
-      } catch (error) {
-        console.log("Error when fetching source");
-        return "No source found";
-      }
-    },
-    [apiUrl, authToken, sources]
-  );
+  const getSource = useCallback(async (sourceId) => {
+    if (sources[sourceId]) {
+      return sources[sourceId]; // Return cached source if available
+    }
+    try {
+      const response = await axios.get(`${apiUrl}/api/sources/${sourceId}`, {
+        headers: {
+          Authorization: `Token ${authToken}`,
+        },
+      });
+      const sourceName = response.data.name;
+      const sourceWebsite = response.data.website;
+      setSources((prevSources) => ({
+        ...prevSources,
+        [sourceId]: { sourceName, sourceWebsite },
+      }));
+      return { sourceName, sourceWebsite };
+    } catch (error) {
+      console.log("Error when fetching source");
+      return "No source found";
+    }
+  }, []);
 
-  const getLabel = useCallback(
-    async (labelId) => {
-      if (labels[labelId]) {
-        return labels[labelId]; // Return cached label if available
-      }
-      try {
-        const response = await axios.get(`${apiUrl}/api/labels/${labelId}`, {
-          headers: {
-            Authorization: `Token ${authToken}`,
-          },
-        });
-        const labelName = response.data.name;
-        const labelType = response.data.type;
-        setLabels((prevLabels) => ({
-          ...prevLabels,
-          [labelId]: { labelName, labelType },
-        }));
-        return { labelName, labelType };
-      } catch (error) {
-        console.log("Error when fetching label");
-        return "No label found";
-      }
-    },
-    [apiUrl, authToken, labels]
-  );
+  const getLabel = useCallback(async (labelId) => {
+    if (labels[labelId]) {
+      return labels[labelId]; // Return cached label if available
+    }
+    try {
+      const response = await axios.get(`${apiUrl}/api/labels/${labelId}`, {
+        headers: {
+          Authorization: `Token ${authToken}`,
+        },
+      });
+      const labelName = response.data.name;
+      const labelType = response.data.type;
+      setLabels((prevLabels) => ({
+        ...prevLabels,
+        [labelId]: { labelName, labelType },
+      }));
+      return { labelName, labelType };
+    } catch (error) {
+      console.log("Error when fetching label");
+      return "No label found";
+    }
+  }, []);
 
   const getStories = useCallback(async () => {
     const searchParam = debouncedSearch ? `&title=${debouncedSearch}` : "";
