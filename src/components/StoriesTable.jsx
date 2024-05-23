@@ -25,7 +25,7 @@ export default function StoriesTable() {
   const searchQuery = location.state?.search || "";
   useEffect(() => {
     setSearch(searchQuery);
-  }, [searchQuery]);
+  }, []);
 
   const [page, setPage] = useState(initialPage);
 
