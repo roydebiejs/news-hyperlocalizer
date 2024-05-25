@@ -181,7 +181,7 @@ export default function StoriesTable() {
                   onChange={(e) => setSearch(e.target.value)}
                 />
                 <div
-                  className="absolute inset-x-0 bottom-0 border-t border-gray-300 peer-focus:border-t-2 peer-focus:border-indigo-600"
+                  className="absolute inset-x-0 bottom-0 border-t border-gray-300 peer-focus:border-t-2 peer-focus:border-red-600"
                   aria-hidden="true"
                 />
               </div>
@@ -192,7 +192,7 @@ export default function StoriesTable() {
             >
               <div className="flex flex-1 justify-between sm:justify-start">
                 <button
-                  className={`relative inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold ring-1 ring-inset ring-gray-300 hover:bg-indigo-900 focus-visible:outline-offset-0 text-white ${
+                  className={`relative inline-flex items-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold ring-1 ring-inset ring-gray-300 hover:bg-red-900 focus-visible:outline-offset-0 text-white ${
                     page === 1 ? "opacity-50 cursor-not-allowed" : ""
                   }`}
                   onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
@@ -201,7 +201,7 @@ export default function StoriesTable() {
                   Terug
                 </button>
                 <button
-                  className={`relative ml-3 inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold ring-1 ring-inset ring-gray-300 hover:bg-indigo-900 focus-visible:outline-offset-0 text-white ${
+                  className={`relative ml-3 inline-flex items-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold ring-1 ring-inset ring-gray-300 hover:bg-red-900 focus-visible:outline-offset-0 text-white ${
                     page === totalPages ? "opacity-50 cursor-not-allowed" : ""
                   }`}
                   onClick={() =>
@@ -329,7 +329,7 @@ export default function StoriesTable() {
                             state: { page, search },
                           });
                         }}
-                        className="text-indigo-600 hover:text-indigo-900"
+                        className="text-red-600 hover:text-red-900"
                       >
                         Bekijk<span className="sr-only">, {story.title}</span>
                       </button>

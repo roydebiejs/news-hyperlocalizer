@@ -7,6 +7,10 @@ import {
   UserGroupIcon,
   TagIcon,
   ChartPieIcon,
+  PresentationChartBarIcon,
+  SpeakerWaveIcon,
+  HeartIcon,
+  ShieldExclamationIcon,
 } from "@heroicons/react/24/outline";
 
 export default function Story() {
@@ -20,6 +24,7 @@ export default function Story() {
 
   const [source, setSource] = useState({});
   const [labels, setLabels] = useState([]);
+  const [userNeeds, setUserNeeds] = useState([]);
 
   const getStory = useCallback(async () => {
     await axios
@@ -36,6 +41,36 @@ export default function Story() {
           for (const labelId of labelIds) {
             getLabel(labelId);
           }
+
+          // check which user needsd is the highest, give that object a key of true
+          const highestNeed = Math.max(
+            response.data.needsKnow,
+            response.data.needsUnderstand,
+            response.data.needsFeel,
+            response.data.needsDo
+          );
+          setUserNeeds([
+            {
+              name: "Know",
+              stat: response.data.needsKnow,
+              highestNeed: highestNeed === response.data.needsKnow,
+            },
+            {
+              name: "Understand",
+              stat: response.data.needsUnderstand,
+              highestNeed: highestNeed === response.data.needsUnderstand,
+            },
+            {
+              name: "Feel",
+              stat: response.data.needsFeel,
+              highestNeed: highestNeed === response.data.needsFeel,
+            },
+            {
+              name: "Do",
+              stat: response.data.needsDo,
+              highestNeed: highestNeed === response.data.needsDo,
+            },
+          ]);
         } else {
           console.log("No story found");
         }
@@ -143,7 +178,7 @@ export default function Story() {
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:mt-2">
                       <Link
                         to={source.website}
-                        className="text-indigo-600 hover:text-indigo-500"
+                        className="text-red-600 hover:text-red-500"
                       >
                         {source ? source.name : ""}
                       </Link>
@@ -169,7 +204,42 @@ export default function Story() {
               />
             </div>
           </div>
-          <div className="my-4">
+          <div>
+            <h3 className="text-base font-semibold leading-6 text-gray-900">
+              User needs
+            </h3>
+            <dl className="mt-5 grid grid-cols-2 gap-5 xl:grid-cols-4">
+              {userNeeds.map((item) => (
+                <div
+                  key={item.name}
+                  className={`overflow-hidden rounded-lg px-4 py-5 shadow sm:p-6 ${
+                    item.highestNeed ? "bg-red-500 text-white" : "bg-white"
+                  }`}
+                >
+                  <dt className="truncate text-sm font-medium ">{item.name}</dt>
+                  <dd className="mt-1 text-3xl font-semibold tracking-tight">
+                    {item.name === "Understand" ? (
+                      <PresentationChartBarIcon className="h-6 w-6 inline-block mr-1" />
+                    ) : null}
+                    {item.name === "Know" ? (
+                      <SpeakerWaveIcon className="h-6 w-6 inline-block mr-1" />
+                    ) : null}
+                    {item.name === "Feel" ? (
+                      <HeartIcon className="h-6 w-6 inline-block mr-1" />
+                    ) : null}
+                    {item.name === "Do" ? (
+                      <ShieldExclamationIcon className="h-6 w-6 inline-block mr-1" />
+                    ) : null}
+                    {Math.round((item.stat / story.needsSum) * 100)} %{" "}
+                    <span className="text-base font-normal tracking-normal pl-5">
+                      {item.stat}
+                    </span>
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+          <div className="my-5">
             {labels
               ? labels.map((label) => (
                   <span
@@ -203,7 +273,8 @@ export default function Story() {
                 ))
               : null}
           </div>
-          <p className="mt-5 text-sm leading-6 text-gray-700 sm:mt-10 2xl:w-3/4">
+
+          <p className="mt-5 text-sm leading-6 text-gray-700 2xl:w-3/4">
             {story.story}
           </p>
         </div>
