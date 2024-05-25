@@ -177,7 +177,7 @@ export default function StoriesTable() {
                   id="search"
                   value={search}
                   className="peer block w-full border-0 bg-gray-50 py-1.5 text-gray-900 focus:ring-0 text-sm sm:leading-6"
-                  placeholder="PSV is landskampioen"
+                  placeholder=""
                   onChange={(e) => setSearch(e.target.value)}
                 />
                 <div
