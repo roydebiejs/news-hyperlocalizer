@@ -2,6 +2,12 @@ import { useEffect, useState, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import {
+  MapPinIcon,
+  UserGroupIcon,
+  TagIcon,
+  ChartPieIcon,
+} from "@heroicons/react/24/outline";
 
 export default function Story() {
   const id = window.location.pathname.split("/").pop();
@@ -13,6 +19,7 @@ export default function Story() {
   const authToken = sessionStorage.getItem("token");
 
   const [source, setSource] = useState({});
+  const [labels, setLabels] = useState([]);
 
   const getStory = useCallback(async () => {
     await axios
@@ -25,6 +32,10 @@ export default function Story() {
         if (response.data) {
           setStory(response.data);
           getSource(response.data.source);
+          const labelIds = response.data.labels;
+          for (const labelId of labelIds) {
+            getLabel(labelId);
+          }
         } else {
           console.log("No story found");
         }
@@ -55,6 +66,27 @@ export default function Story() {
       return "No source found";
     }
   }, []);
+
+  const getLabel = useCallback(async (labelId) => {
+    try {
+      const response = await axios.get(`${apiUrl}/api/labels/${labelId}`, {
+        headers: {
+          Authorization: `Token ${authToken}`,
+        },
+      });
+      const labelName = response.data.name;
+      const labelType = response.data.type;
+      if (labels.find((label) => label.labelName === labelName)) {
+        return;
+      }
+      setLabels((labels) => [...labels, { labelId, labelName, labelType }]);
+    } catch (error) {
+      console.log("Error when fetching label");
+      return "No label found";
+    }
+  }, []);
+
+  const randomId = () => Math.random().toString(36).substr(2, 9);
 
   return (
     <div className="px-8 sm:px-12 lg:px-16">
@@ -136,6 +168,40 @@ export default function Story() {
                 alt=""
               />
             </div>
+          </div>
+          <div className="my-4">
+            {labels
+              ? labels.map((label) => (
+                  <span
+                    key={label + randomId()}
+                    className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset mr-1 mb-1 ${
+                      label.labelType == "LOCATION"
+                        ? "bg-blue-100 text-blue-800 ring-blue-600/20"
+                        : label.labelType == "AUDIENCE"
+                        ? "bg-green-100 text-green-800 ring-green-600/20"
+                        : label.labelType == "TOPIC"
+                        ? "bg-yellow-100 text-yellow-800 ring-yellow-600/20"
+                        : label.labelType == "CATEGORY"
+                        ? "bg-purple-100 text-purple-800 ring-purple-600/20"
+                        : "bg-gray-100 text-gray-800"
+                    }`}
+                  >
+                    {label.labelType == "LOCATION" ? (
+                      <MapPinIcon className="h-4 w-4 mr-1" />
+                    ) : null}
+                    {label.labelType == "AUDIENCE" ? (
+                      <UserGroupIcon className="h-4 w-4 mr-1" />
+                    ) : null}
+                    {label.labelType == "TOPIC" ? (
+                      <TagIcon className="h-4 w-4 mr-1" />
+                    ) : null}
+                    {label.labelType == "CATEGORY" ? (
+                      <ChartPieIcon className="h-4 w-4 mr-1" />
+                    ) : null}
+                    {label.labelName}
+                  </span>
+                ))
+              : null}
           </div>
           <p className="mt-5 text-sm leading-6 text-gray-700 sm:mt-10 2xl:w-3/4">
             {story.story}
