@@ -13,6 +13,9 @@ RUN npm install
 # Copy the rest of your app's source code
 COPY . .
 
+# Set environment variable
+ENV VITE_API_URL=http://localhost:8000
+
 # Expose port 5173 for Vite's development server
 EXPOSE 5173
 
