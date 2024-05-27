@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+
 import axios from "axios";
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -18,7 +20,8 @@ export default function StoriesTable() {
   const location = useLocation();
   const navigate = useNavigate();
   const apiUrl = import.meta.env.VITE_API_URL;
-  const authToken = sessionStorage.getItem("token");
+
+  const authToken = localStorage.getItem("authToken");
 
   // Get initial page number from location state or default to 1
   const initialPage = location.state?.page || 1;
@@ -49,9 +52,12 @@ export default function StoriesTable() {
         password: "aP1",
       })
       .then(function (response) {
-        sessionStorage.setItem("token", response.data.token);
+        localStorage.setItem("authToken", response.data.token);
+        navigate("/stories", {
+          replace: true,
+        });
       });
-  }, [apiUrl]);
+  }, []);
 
   const getSource = useCallback(async (sourceId) => {
     if (sources[sourceId]) {
@@ -149,11 +155,11 @@ export default function StoriesTable() {
           replace: true,
         });
       });
-  }, [apiUrl, authToken, debouncedSearch, getLabel, navigate, page]);
+  }, [authToken, debouncedSearch, page]);
 
   useEffect(() => {
     getStories();
-  }, [getStories, page, debouncedSearch]);
+  }, [page, debouncedSearch]);
 
   const randomId = () => Math.random().toString(36).substr(2, 9);
 
