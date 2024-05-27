@@ -20,7 +20,7 @@ export default function Story() {
   const location = useLocation();
 
   const apiUrl = import.meta.env.VITE_API_URL;
-  const authToken = sessionStorage.getItem("token");
+  const authToken = localStorage.getItem("authToken");
 
   const [source, setSource] = useState({});
   const [labels, setLabels] = useState([]);
