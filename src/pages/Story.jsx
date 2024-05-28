@@ -199,7 +199,7 @@ export default function Story() {
             <div className="w-full sm:w-3/4 md:w-2/4 mt-4">
               <img
                 className="w-full h-full object-cover rounded-md max-w-3xl"
-                src={story.image}
+                src={story.image_url}
                 alt=""
               />
             </div>
