@@ -295,6 +295,7 @@ export default function StoriesTable() {
                         {story.sourceWebsite}
                       </div>
                     </td>
+
                     <td className="whitespace-normal px-3 py-2.5 text-sm text-gray-500 max-w-[15rem] hidden lg:table-cell">
                       {story.labels.map((label) => (
                         <span
