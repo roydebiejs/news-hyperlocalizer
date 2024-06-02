@@ -174,7 +174,7 @@ export default function StoriesTable() {
                 htmlFor="name"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
-                Zoek op basis van onderwerp
+                Zoek op basis van titel
               </label>
               <div className="relative mt-2">
                 <input
