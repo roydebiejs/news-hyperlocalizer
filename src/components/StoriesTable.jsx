@@ -277,6 +277,7 @@ export default function StoriesTable() {
                         </div>
                       </div>
                     </td>
+
                     <td className="whitespace-normal px-3 py-2.5 text-sm text-gray-500 max-w-xs">
                       <div className="font-medium text-gray-900">
                         {story.title}
@@ -285,6 +286,7 @@ export default function StoriesTable() {
                         {story.summary}
                       </div>
                     </td>
+
                     <td className="whitespace-normal px-3 py-2.5 text-sm text-gray-500 max-w-[15rem] hidden sm:table-cell">
                       <div className="font-medium text-gray-900">
                         {story.sourceName}
@@ -293,6 +295,7 @@ export default function StoriesTable() {
                         {story.sourceWebsite}
                       </div>
                     </td>
+
                     <td className="whitespace-normal px-3 py-2.5 text-sm text-gray-500 max-w-[15rem] hidden lg:table-cell">
                       {story.labels.map((label) => (
                         <span
