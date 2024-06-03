@@ -9,6 +9,8 @@ import {
   TagIcon,
   ChartPieIcon,
 } from "@heroicons/react/24/outline";
+import { DemoStories } from "../data/DemoStories.js";
+import { useApi } from "../ApiContext.jsx";
 
 export default function StoriesTable() {
   const [stories, setStories] = useState([]);
@@ -19,6 +21,7 @@ export default function StoriesTable() {
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
+  const { apiConnected } = useApi();
   const apiUrl = import.meta.env.VITE_API_URL;
 
   const authToken = localStorage.getItem("authToken");
@@ -56,6 +59,9 @@ export default function StoriesTable() {
         navigate("/stories", {
           replace: true,
         });
+      })
+      .catch(function (error) {
+        console.log(error);
       });
   }, []);
 
@@ -155,15 +161,20 @@ export default function StoriesTable() {
           replace: true,
         });
       });
-  }, [authToken, debouncedSearch, page]);
+  }, [debouncedSearch, page]);
 
   useEffect(() => {
+    if (!apiConnected) {
+      setStories(DemoStories);
+      setTotalResults(DemoStories.length);
+      return;
+    }
     getStories();
   }, [page, debouncedSearch]);
 
   const randomId = () => Math.random().toString(36).substr(2, 9);
 
-  const totalPages = Math.ceil(totalResults / 10);
+  const totalPages = apiConnected ? 1 : Math.ceil(totalResults / 10);
   return (
     <>
       <div className="px-8 sm:px-12 lg:px-16">
@@ -272,7 +283,11 @@ export default function StoriesTable() {
                           <img
                             className="h-11 w-11 rounded-md object-cover"
                             src={
-                              story.image_url ? story.image_url : story.image
+                              apiConnected
+                                ? "https://www.bibliotheekwerk.nl/wp-content/uploads/2016/06/geen_foto_beschikbaar.jpg"
+                                : story.image_url
+                                ? story.image_url
+                                : story.image
                             }
                             alt=""
                           />
