@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
@@ -158,8 +160,14 @@ export default function Story() {
                       Aangemaakt
                     </dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:mt-2">
-                      <p>{new Date(story.created).toLocaleString()}</p>
-                      <p>{timeDifference(story.created)}</p>
+                      <p>
+                        {story.created
+                          ? new Date(story.created).toLocaleString()
+                          : ""}
+                      </p>
+                      <p>
+                        {story.created ? timeDifference(story.created) : ""}
+                      </p>
                     </dd>
                   </div>
                   <div className="border-t border-gray-100 py-1 lg:py-2 sm:col-span-1 sm:px-0">
@@ -167,8 +175,14 @@ export default function Story() {
                       Geüpdatet
                     </dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:mt-2">
-                      <p>{new Date(story.updated).toLocaleString()}</p>
-                      <p>{timeDifference(story.updated)}</p>
+                      <p>
+                        {story.updated
+                          ? new Date(story.updated).toLocaleString()
+                          : ""}
+                      </p>
+                      <p>
+                        {story.updated ? timeDifference(story.updated) : ""}
+                      </p>
                     </dd>
                   </div>
                   <div className="border-t border-gray-100 py-1 lg:py-2 sm:col-span-1 sm:px-0">
@@ -199,7 +213,7 @@ export default function Story() {
             <div className="w-full sm:w-3/4 md:w-2/4 mt-4">
               <img
                 className="w-full h-full object-cover rounded-md max-w-3xl"
-                src={story.image_url}
+                src={story.image_url ? story.image_url : story.image}
                 alt=""
               />
             </div>
@@ -284,16 +298,12 @@ export default function Story() {
 }
 
 function timeDifference(storyUpdated) {
-  // Huidige datum en tijd
   const now = new Date();
 
-  // Datum en tijd van story.updated
   const updated = new Date(storyUpdated);
 
-  // Verschil in milliseconden
   const diff = now - updated;
 
-  // Berekening van dagen, uren en minuten
   const diffInMinutes = Math.floor(diff / (1000 * 60));
   const days = Math.floor(diffInMinutes / (60 * 24));
   const hours = Math.floor((diffInMinutes % (60 * 24)) / 60);

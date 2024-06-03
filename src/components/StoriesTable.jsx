@@ -271,7 +271,9 @@ export default function StoriesTable() {
                         <div className="h-11 w-11 flex-shrink-0">
                           <img
                             className="h-11 w-11 rounded-md object-cover"
-                            src={story.image_url}
+                            src={
+                              story.image_url ? story.image_url : story.image
+                            }
                             alt=""
                           />
                         </div>
