@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 /* eslint-disable react/prop-types */
 
 import { createContext, useContext, useState, useEffect } from "react";
@@ -6,7 +7,7 @@ import { CheckApiConnection } from "./apiService";
 const ApiContext = createContext();
 
 export const ApiProvider = ({ children }) => {
-  const [apiConnected, setApiConnected] = useState(false);
+  const [apiConnected, setApiConnected] = useState(true);
 
   useEffect(() => {
     const initializeApiConnection = async () => {
