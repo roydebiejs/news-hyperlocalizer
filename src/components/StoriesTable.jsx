@@ -185,7 +185,7 @@ export default function StoriesTable() {
                 htmlFor="name"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
-                Zoek op basis van titel
+                Filter nieuws op naam:
               </label>
               <div className="relative mt-2">
                 <input
@@ -346,12 +346,13 @@ export default function StoriesTable() {
                     </td>
                     <td className="relative whitespace-nowrap py-2.5 pl-3 text-left text-sm font-medium sm:pr-0">
                       <button
+                        type="button"
                         onClick={() => {
                           navigate(`/stories/${story.id}`, {
                             state: { page, search },
                           });
                         }}
-                        className="text-red-600 hover:text-red-900"
+                        className="rounded-md bg-red-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
                       >
                         Bekijk<span className="sr-only">, {story.title}</span>
                       </button>
