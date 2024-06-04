@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Transition, Dialog } from "@headlessui/react";
 import {
   Bars3Icon,
@@ -8,7 +8,7 @@ import {
   ClipboardDocumentListIcon,
 } from "@heroicons/react/24/outline";
 
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const navigation = [
   { name: "Nieuws", href: "/stories", icon: HomeIcon },
@@ -25,9 +25,14 @@ function classNames(...classes) {
 
 export default function Nav(props) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const location = useLocation();
   const [active, setActive] = useState(
-    window.location.pathname === "/" ? "/stories" : window.location.pathname
+    location.pathname === "/" ? "/stories" : location.pathname
   );
+
+  useEffect(() => {
+    setActive(location.pathname);
+  }, [location.pathname]);
 
   return (
     <>
@@ -98,7 +103,7 @@ export default function Nav(props) {
                                     setSidebarOpen(false);
                                   }}
                                   className={classNames(
-                                    item.href === active
+                                    active.includes(item.href)
                                       ? "bg-gray-800 text-white"
                                       : "text-gray-400 hover:text-white hover:bg-gray-800",
                                     "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
@@ -138,7 +143,7 @@ export default function Nav(props) {
                             setSidebarOpen(false);
                           }}
                           className={classNames(
-                            item.href === active
+                            active.includes(item.href)
                               ? "bg-gray-800 text-white"
                               : "text-gray-400 hover:text-white hover:bg-gray-800",
                             "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
