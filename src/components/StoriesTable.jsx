@@ -170,11 +170,11 @@ export default function StoriesTable() {
       return;
     }
     getStories();
-  }, [page, debouncedSearch]);
+  }, [page, debouncedSearch, apiConnected]);
 
   const randomId = () => Math.random().toString(36).substr(2, 9);
 
-  const totalPages = apiConnected ? 1 : Math.ceil(totalResults / 10);
+  const totalPages = apiConnected ? Math.ceil(totalResults / 10) : 1;
   return (
     <>
       <div className="px-8 sm:px-12 lg:px-16">
@@ -283,11 +283,7 @@ export default function StoriesTable() {
                           <img
                             className="h-11 w-11 rounded-md object-cover"
                             src={
-                              apiConnected
-                                ? "https://www.bibliotheekwerk.nl/wp-content/uploads/2016/06/geen_foto_beschikbaar.jpg"
-                                : story.image_url
-                                ? story.image_url
-                                : story.image
+                              story.image_url ? story.image_url : story.image
                             }
                             alt=""
                           />
