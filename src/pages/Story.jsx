@@ -227,7 +227,7 @@ export default function Story() {
                 <div
                   key={item.name}
                   className={`overflow-hidden rounded-lg px-4 py-5 shadow sm:p-6 ${
-                    item.highestNeed ? "bg-red-500 text-white" : "bg-white"
+                    item.highestNeed ? "bg-gray-500 text-white" : "bg-white"
                   }`}
                 >
                   <dt className="truncate text-sm font-medium ">{item.name}</dt>
