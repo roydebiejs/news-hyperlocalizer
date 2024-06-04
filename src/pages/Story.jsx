@@ -14,12 +14,15 @@ import {
   HeartIcon,
   ShieldExclamationIcon,
 } from "@heroicons/react/24/outline";
+import { useApi } from "../ApiContext.jsx";
+import { DemoStories } from "../data/DemoStories.js";
 
 export default function Story() {
   const id = window.location.pathname.split("/").pop();
   const [story, setStory] = useState({});
   const navigate = useNavigate();
   const location = useLocation();
+  const { apiConnected } = useApi();
 
   const apiUrl = import.meta.env.VITE_API_URL;
   const authToken = localStorage.getItem("authToken");
@@ -84,7 +87,50 @@ export default function Story() {
 
   useEffect(() => {
     getStory();
-  }, [getStory]);
+  }, []);
+
+  useEffect(() => {
+    if (!apiConnected) {
+      const demoStory = DemoStories.find((story) => story.id == id);
+      setStory(demoStory);
+      const highestNeed = Math.max(
+        demoStory.needsKnow,
+        demoStory.needsUnderstand,
+        demoStory.needsFeel,
+        demoStory.needsDo
+      );
+      setUserNeeds([
+        {
+          name: "Know",
+          stat: demoStory.needsKnow,
+          highestNeed: highestNeed === demoStory.needsKnow,
+        },
+        {
+          name: "Understand",
+          stat: demoStory.needsUnderstand,
+          highestNeed: highestNeed === demoStory.needsUnderstand,
+        },
+        {
+          name: "Feel",
+          stat: demoStory.needsFeel,
+          highestNeed: highestNeed === demoStory.needsFeel,
+        },
+        {
+          name: "Do",
+          stat: demoStory.needsDo,
+          highestNeed: highestNeed === demoStory.needsDo,
+        },
+      ]);
+      console.log(demoStory);
+      setSource({
+        name: demoStory.sourceName,
+        website: demoStory.sourceWebsite,
+      });
+      setLabels(demoStory.labels);
+      return;
+    }
+    getStory();
+  }, [apiConnected]);
 
   const getSource = useCallback(async (sourceId) => {
     try {
