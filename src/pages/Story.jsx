@@ -47,7 +47,6 @@ export default function Story() {
             getLabel(labelId);
           }
 
-          // check which user needsd is the highest, give that object a key of true
           const highestNeed = Math.max(
             response.data.needsKnow,
             response.data.needsUnderstand,
