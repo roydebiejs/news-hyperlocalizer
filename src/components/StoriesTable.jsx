@@ -9,6 +9,8 @@ import {
   TagIcon,
   ChartPieIcon,
 } from "@heroicons/react/24/outline";
+import { DemoStories } from "../data/DemoStories.js";
+import { useApi } from "../ApiContext.jsx";
 
 export default function StoriesTable() {
   const [stories, setStories] = useState([]);
@@ -19,6 +21,7 @@ export default function StoriesTable() {
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
+  const { apiConnected } = useApi();
   const apiUrl = import.meta.env.VITE_API_URL;
 
   const authToken = localStorage.getItem("authToken");
@@ -56,6 +59,9 @@ export default function StoriesTable() {
         navigate("/stories", {
           replace: true,
         });
+      })
+      .catch(function (error) {
+        console.log(error);
       });
   }, []);
 
@@ -155,15 +161,20 @@ export default function StoriesTable() {
           replace: true,
         });
       });
-  }, [authToken, debouncedSearch, page]);
+  }, [debouncedSearch, page]);
 
   useEffect(() => {
+    if (!apiConnected) {
+      setStories(DemoStories);
+      setTotalResults(DemoStories.length);
+      return;
+    }
     getStories();
-  }, [page, debouncedSearch]);
+  }, [page, debouncedSearch, apiConnected]);
 
   const randomId = () => Math.random().toString(36).substr(2, 9);
 
-  const totalPages = Math.ceil(totalResults / 10);
+  const totalPages = apiConnected ? Math.ceil(totalResults / 10) : 1;
   return (
     <>
       <div className="px-8 sm:px-12 lg:px-16">
@@ -174,7 +185,7 @@ export default function StoriesTable() {
                 htmlFor="name"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
-                Zoek op basis van titel
+                Filter nieuws op naam:
               </label>
               <div className="relative mt-2">
                 <input
@@ -271,12 +282,15 @@ export default function StoriesTable() {
                         <div className="h-11 w-11 flex-shrink-0">
                           <img
                             className="h-11 w-11 rounded-md object-cover"
-                            src={story.image_url}
+                            src={
+                              story.image_url ? story.image_url : story.image
+                            }
                             alt=""
                           />
                         </div>
                       </div>
                     </td>
+
                     <td className="whitespace-normal px-3 py-2.5 text-sm text-gray-500 max-w-xs">
                       <div className="font-medium text-gray-900">
                         {story.title}
@@ -285,6 +299,7 @@ export default function StoriesTable() {
                         {story.summary}
                       </div>
                     </td>
+
                     <td className="whitespace-normal px-3 py-2.5 text-sm text-gray-500 max-w-[15rem] hidden sm:table-cell">
                       <div className="font-medium text-gray-900">
                         {story.sourceName}
@@ -293,6 +308,7 @@ export default function StoriesTable() {
                         {story.sourceWebsite}
                       </div>
                     </td>
+
                     <td className="whitespace-normal px-3 py-2.5 text-sm text-gray-500 max-w-[15rem] hidden lg:table-cell">
                       {story.labels.map((label) => (
                         <span
@@ -330,12 +346,13 @@ export default function StoriesTable() {
                     </td>
                     <td className="relative whitespace-nowrap py-2.5 pl-3 text-left text-sm font-medium sm:pr-0">
                       <button
+                        type="button"
                         onClick={() => {
                           navigate(`/stories/${story.id}`, {
                             state: { page, search },
                           });
                         }}
-                        className="text-red-600 hover:text-red-900"
+                        className="rounded-md bg-red-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
                       >
                         Bekijk<span className="sr-only">, {story.title}</span>
                       </button>

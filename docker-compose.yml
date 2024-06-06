@@ -1,7 +1,7 @@
 version: "3.8"
 services:
-  react:
-    container_name: "NewsHyperlocalizer" # Name of the container
+  frontend:
+    container_name: "frontend" # Name of the container
     build:
       context: .
     ports:
@@ -9,5 +9,3 @@ services:
     volumes:
       - .:/app
       - /app/node_modules
-    env_file:
-      - .env

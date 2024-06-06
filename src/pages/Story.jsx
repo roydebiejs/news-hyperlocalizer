@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
@@ -12,12 +14,15 @@ import {
   HeartIcon,
   ShieldExclamationIcon,
 } from "@heroicons/react/24/outline";
+import { useApi } from "../ApiContext.jsx";
+import { DemoStories } from "../data/DemoStories.js";
 
 export default function Story() {
   const id = window.location.pathname.split("/").pop();
   const [story, setStory] = useState({});
   const navigate = useNavigate();
   const location = useLocation();
+  const { apiConnected } = useApi();
 
   const apiUrl = import.meta.env.VITE_API_URL;
   const authToken = localStorage.getItem("authToken");
@@ -42,7 +47,6 @@ export default function Story() {
             getLabel(labelId);
           }
 
-          // check which user needsd is the highest, give that object a key of true
           const highestNeed = Math.max(
             response.data.needsKnow,
             response.data.needsUnderstand,
@@ -82,7 +86,50 @@ export default function Story() {
 
   useEffect(() => {
     getStory();
-  }, [getStory]);
+  }, []);
+
+  useEffect(() => {
+    if (!apiConnected) {
+      const demoStory = DemoStories.find((story) => story.id == id);
+      setStory(demoStory);
+      const highestNeed = Math.max(
+        demoStory.needsKnow,
+        demoStory.needsUnderstand,
+        demoStory.needsFeel,
+        demoStory.needsDo
+      );
+      setUserNeeds([
+        {
+          name: "Know",
+          stat: demoStory.needsKnow,
+          highestNeed: highestNeed === demoStory.needsKnow,
+        },
+        {
+          name: "Understand",
+          stat: demoStory.needsUnderstand,
+          highestNeed: highestNeed === demoStory.needsUnderstand,
+        },
+        {
+          name: "Feel",
+          stat: demoStory.needsFeel,
+          highestNeed: highestNeed === demoStory.needsFeel,
+        },
+        {
+          name: "Do",
+          stat: demoStory.needsDo,
+          highestNeed: highestNeed === demoStory.needsDo,
+        },
+      ]);
+      console.log(demoStory);
+      setSource({
+        name: demoStory.sourceName,
+        website: demoStory.sourceWebsite,
+      });
+      setLabels(demoStory.labels);
+      return;
+    }
+    getStory();
+  }, [apiConnected]);
 
   const getSource = useCallback(async (sourceId) => {
     try {
@@ -158,8 +205,14 @@ export default function Story() {
                       Aangemaakt
                     </dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:mt-2">
-                      <p>{new Date(story.created).toLocaleString()}</p>
-                      <p>{timeDifference(story.created)}</p>
+                      <p>
+                        {story.created
+                          ? new Date(story.created).toLocaleString()
+                          : ""}
+                      </p>
+                      <p>
+                        {story.created ? timeDifference(story.created) : ""}
+                      </p>
                     </dd>
                   </div>
                   <div className="border-t border-gray-100 py-1 lg:py-2 sm:col-span-1 sm:px-0">
@@ -167,8 +220,14 @@ export default function Story() {
                       Geüpdatet
                     </dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:mt-2">
-                      <p>{new Date(story.updated).toLocaleString()}</p>
-                      <p>{timeDifference(story.updated)}</p>
+                      <p>
+                        {story.updated
+                          ? new Date(story.updated).toLocaleString()
+                          : ""}
+                      </p>
+                      <p>
+                        {story.updated ? timeDifference(story.updated) : ""}
+                      </p>
                     </dd>
                   </div>
                   <div className="border-t border-gray-100 py-1 lg:py-2 sm:col-span-1 sm:px-0">
@@ -199,7 +258,7 @@ export default function Story() {
             <div className="w-full sm:w-3/4 md:w-2/4 mt-4">
               <img
                 className="w-full h-full object-cover rounded-md max-w-3xl"
-                src={story.image_url}
+                src={story.image_url ? story.image_url : story.image}
                 alt=""
               />
             </div>
@@ -213,7 +272,7 @@ export default function Story() {
                 <div
                   key={item.name}
                   className={`overflow-hidden rounded-lg px-4 py-5 shadow sm:p-6 ${
-                    item.highestNeed ? "bg-red-500 text-white" : "bg-white"
+                    item.highestNeed ? "bg-gray-500 text-white" : "bg-white"
                   }`}
                 >
                   <dt className="truncate text-sm font-medium ">{item.name}</dt>
@@ -284,16 +343,12 @@ export default function Story() {
 }
 
 function timeDifference(storyUpdated) {
-  // Huidige datum en tijd
   const now = new Date();
 
-  // Datum en tijd van story.updated
   const updated = new Date(storyUpdated);
 
-  // Verschil in milliseconden
   const diff = now - updated;
 
-  // Berekening van dagen, uren en minuten
   const diffInMinutes = Math.floor(diff / (1000 * 60));
   const days = Math.floor(diffInMinutes / (60 * 24));
   const hours = Math.floor((diffInMinutes % (60 * 24)) / 60);
