@@ -1,6 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
 /* eslint-disable react/prop-types */
-
 import { createContext, useContext, useState, useEffect } from "react";
 import { CheckApiConnection } from "./apiService";
 
@@ -25,5 +24,9 @@ export const ApiProvider = ({ children }) => {
 };
 
 export const useApi = () => {
-  return useContext(ApiContext);
+  const context = useContext(ApiContext);
+  if (context === undefined) {
+    throw new Error("useApi must be used within an ApiProvider");
+  }
+  return context;
 };
