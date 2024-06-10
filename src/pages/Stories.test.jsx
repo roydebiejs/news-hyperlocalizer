@@ -12,5 +12,6 @@ test("Simple test to check if the text 'Filter nieuws op naam' is in the documen
       </ApiProvider>
     </BrowserRouter>
   );
-  expect(screen.getByText(/Filter nieuws op naam/i)).toBeInTheDocument();
+  const textElement = screen.getByText(/Filter nieuws op naam/i);
+  expect(textElement).toBeInTheDocument();
 });
