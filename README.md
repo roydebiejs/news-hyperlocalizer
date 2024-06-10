@@ -4,9 +4,11 @@ This repo is for the front end of the News Hyperlocalizer challenge. The back-en
 
 ## Prerequisites
 
-Before you begin, ensure you have met the following requirements:
+Before you begin, make sure you have the following installed:
 
-- You have installed Docker and Docker Compose on your machine.
+- **Docker**: Docker is used to containerize the development environment. You can create a Docker account and download Docker Desktop from the [official Docker website](https://www.docker.com/products/docker-desktop/).
+- **GitHub Account**: You will need a GitHub account to access the GitHub Container Registry (GHCR).
+- **Personal Access Token (PAT)**: You will need a Personal Access Token (PAT) to access the GitHub Container Registry (GHCR). You can create a PAT by going to your GitHub account settings, selecting Developer settings, Personal access tokens, and then clicking Generate new token. Make sure to copy the token as you will not be able to see it again. The PAT should have the `read:packages` scope.
 
 ## Getting Started
 
