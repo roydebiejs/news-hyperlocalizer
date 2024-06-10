@@ -82,10 +82,6 @@ export default function Story() {
       .catch(() => {
         console.log("Error on Authentication");
       });
-  }, [apiUrl, authToken, id]);
-
-  useEffect(() => {
-    getStory();
   }, []);
 
   useEffect(() => {
@@ -120,7 +116,6 @@ export default function Story() {
           highestNeed: highestNeed === demoStory.needsDo,
         },
       ]);
-      console.log(demoStory);
       setSource({
         name: demoStory.sourceName,
         website: demoStory.sourceWebsite,
@@ -129,7 +124,7 @@ export default function Story() {
       return;
     }
     getStory();
-  }, [apiConnected]);
+  }, []);
 
   const getSource = useCallback(async (sourceId) => {
     try {
