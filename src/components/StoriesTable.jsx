@@ -46,20 +46,30 @@ export default function StoriesTable() {
   }, [search]);
 
   const getToken = useCallback(async () => {
-    await axios
-      .post(`${apiUrl}/api/token/`, {
-        username: "api",
-        password: "aP1",
-      })
-      .then(function (response) {
-        localStorage.setItem("authToken", response.data.token);
-        navigate("/stories", {
-          replace: true,
-        });
-      })
-      .catch(function (error) {
-        console.log(error);
+    try {
+      const response = await axios.post(
+        `${apiUrl}/api/token/`,
+        {
+          username: import.meta.env.VITE_API_USERNAME,
+          password: import.meta.env.VITE_API_PASSWORD,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      localStorage.setItem("authToken", response.data.token);
+      navigate("/stories", {
+        replace: true,
       });
+    } catch (error) {
+      console.error(
+        "Error:",
+        error.response ? error.response.data : error.message
+      );
+    }
   }, []);
 
   const getSource = useCallback(async (sourceId) => {
@@ -121,6 +131,7 @@ export default function StoriesTable() {
         },
       })
       .then(async function (response) {
+        console.log(response.data);
         if (response.data.results) {
           const storiesWithSources = await Promise.all(
             response.data.results.map(async (story) => {
@@ -145,6 +156,18 @@ export default function StoriesTable() {
               };
             })
           );
+          // sort stories by date and if they have no date, put them at the end
+          storiesWithLabels.sort((a, b) => {
+            if (a.date && b.date) {
+              return new Date(b.date) - new Date(a.date);
+            } else if (a.date) {
+              return -1;
+            } else if (b.date) {
+              return 1;
+            } else {
+              return 0;
+            }
+          });
           setStories(storiesWithLabels);
           setTotalResults(response.data.count);
         } else {

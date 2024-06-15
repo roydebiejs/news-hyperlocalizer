@@ -40,8 +40,8 @@ export default function SourcesTable() {
   const getToken = useCallback(async () => {
     await axios
       .post(`${apiUrl}/api/token/`, {
-        username: "api",
-        password: "aP1",
+        username: import.meta.env.VITE_API_USERNAME,
+        password: import.meta.env.VITE_API_PASSWORD,
       })
       .then(function (response) {
         localStorage.setItem("authToken", response.data.token);
