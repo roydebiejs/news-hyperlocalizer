@@ -2,14 +2,11 @@
 import { render, screen } from "@testing-library/react";
 import Stories from "./Stories";
 import { BrowserRouter } from "react-router-dom";
-import { ApiProvider } from "../ApiContext";
 
 test("Simple test to check if the text 'Filter nieuws op naam' is in the document", () => {
   render(
     <BrowserRouter>
-      <ApiProvider>
-        <Stories />
-      </ApiProvider>
+      <Stories />
     </BrowserRouter>
   );
   const textElement = screen.getByText(/Filter nieuws op naam/i);
