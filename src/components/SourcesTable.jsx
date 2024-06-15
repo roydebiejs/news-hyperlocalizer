@@ -13,6 +13,7 @@ export default function SourcesTable() {
   const location = useLocation();
   const navigate = useNavigate();
   const apiUrl = import.meta.env.VITE_API_URL;
+  const [currentlyScrapingIds, setCurrentlyScrapingIds] = useState([]);
 
   const authToken = localStorage.getItem("authToken");
 
@@ -84,6 +85,7 @@ export default function SourcesTable() {
 
   const handleScrape = async (sourceId) => {
     try {
+      setCurrentlyScrapingIds((prev) => [...prev, sourceId]);
       const response = await axios.post(
         `${apiUrl}/api/collect_stories/`,
         { sourceid: sourceId },
@@ -93,9 +95,8 @@ export default function SourcesTable() {
           },
         }
       );
-      console.log(response.status);
       if (response.status === 200) {
-        alert("Scraping started for source id: " + sourceId);
+        setCurrentlyScrapingIds((prev) => prev.filter((id) => id !== sourceId));
       }
     } catch (error) {
       console.error("Error starting scraping:", error);
@@ -208,7 +209,9 @@ export default function SourcesTable() {
                           onClick={() => handleScrape(source.id)}
                           className="rounded-md bg-red-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
                         >
-                          Start scrape
+                          {currentlyScrapingIds.includes(source.id)
+                            ? "Scraping"
+                            : "Start scrape"}
                           <span className="sr-only">, {source.name}</span>
                         </button>
                       </td>
