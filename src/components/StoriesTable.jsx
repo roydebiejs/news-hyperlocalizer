@@ -9,8 +9,6 @@ import {
   TagIcon,
   ChartPieIcon,
 } from "@heroicons/react/24/outline";
-import { DemoStories } from "../data/DemoStories.js";
-import { useApi } from "../ApiContext.jsx";
 
 export default function StoriesTable() {
   const [stories, setStories] = useState([]);
@@ -21,7 +19,6 @@ export default function StoriesTable() {
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
-  const { apiConnected } = useApi();
   const apiUrl = import.meta.env.VITE_API_URL;
 
   const authToken = localStorage.getItem("authToken");
@@ -164,17 +161,12 @@ export default function StoriesTable() {
   }, [debouncedSearch, page]);
 
   useEffect(() => {
-    if (!apiConnected) {
-      setStories(DemoStories);
-      setTotalResults(DemoStories.length);
-      return;
-    }
     getStories();
-  }, [page, debouncedSearch, apiConnected]);
+  }, [page, debouncedSearch]);
 
   const randomId = () => Math.random().toString(36).substr(2, 9);
 
-  const totalPages = apiConnected ? Math.ceil(totalResults / 10) : 1;
+  const totalPages = Math.ceil(totalResults / 10);
   return (
     <>
       <div className="px-8 sm:px-12 lg:px-16">
@@ -275,90 +267,98 @@ export default function StoriesTable() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200 bg-white">
-                {stories.map((story) => (
-                  <tr key={story.id} className="bg-gray-100">
-                    <td className="whitespace-nowrap py-2.5 pl-4 pr-3 text-sm sm:pl-0">
-                      <div className="flex items-center">
-                        <div className="h-11 w-11 flex-shrink-0">
-                          <img
-                            className="h-11 w-11 rounded-md object-cover"
-                            src={
-                              story.image_url ? story.image_url : story.image
-                            }
-                            alt=""
-                          />
+                {stories.length ? (
+                  stories.map((story) => (
+                    <tr key={story.id} className="bg-gray-100">
+                      <td className="whitespace-nowrap py-2.5 pl-4 pr-3 text-sm sm:pl-0">
+                        <div className="flex items-center">
+                          <div className="h-11 w-11 flex-shrink-0">
+                            <img
+                              className="h-11 w-11 rounded-md object-cover"
+                              src={
+                                story.image_url ? story.image_url : story.image
+                              }
+                              alt=""
+                            />
+                          </div>
                         </div>
-                      </div>
-                    </td>
+                      </td>
 
-                    <td className="whitespace-normal px-3 py-2.5 text-sm text-gray-500 max-w-xs">
-                      <div className="font-medium text-gray-900">
-                        {story.title}
-                      </div>
-                      <div className="mt-1 text-gray-500 hidden md:block">
-                        {story.summary}
-                      </div>
-                    </td>
+                      <td className="whitespace-normal px-3 py-2.5 text-sm text-gray-500 max-w-xs">
+                        <div className="font-medium text-gray-900">
+                          {story.title}
+                        </div>
+                        <div className="mt-1 text-gray-500 hidden md:block">
+                          {story.summary}
+                        </div>
+                      </td>
 
-                    <td className="whitespace-normal px-3 py-2.5 text-sm text-gray-500 max-w-[15rem] hidden sm:table-cell">
-                      <div className="font-medium text-gray-900">
-                        {story.sourceName}
-                      </div>
-                      <div className="mt-1 text-gray-500 hidden 2xl:block">
-                        {story.sourceWebsite}
-                      </div>
-                    </td>
+                      <td className="whitespace-normal px-3 py-2.5 text-sm text-gray-500 max-w-[15rem] hidden sm:table-cell">
+                        <div className="font-medium text-gray-900">
+                          {story.sourceName}
+                        </div>
+                        <div className="mt-1 text-gray-500 hidden 2xl:block">
+                          {story.sourceWebsite}
+                        </div>
+                      </td>
 
-                    <td className="whitespace-normal px-3 py-2.5 text-sm text-gray-500 max-w-[15rem] hidden lg:table-cell">
-                      {story.labels.map((label) => (
-                        <span
-                          key={label + randomId()}
-                          className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset mr-1 mb-1 ${
-                            label.labelType == "LOCATION"
-                              ? "bg-blue-100 text-blue-800 ring-blue-600/20"
-                              : label.labelType == "AUDIENCE"
-                              ? "bg-green-100 text-green-800 ring-green-600/20"
-                              : label.labelType == "TOPIC"
-                              ? "bg-yellow-100 text-yellow-800 ring-yellow-600/20"
-                              : label.labelType == "CATEGORY"
-                              ? "bg-purple-100 text-purple-800 ring-purple-600/20"
-                              : "bg-gray-100 text-gray-800"
-                          }`}
+                      <td className="whitespace-normal px-3 py-2.5 text-sm text-gray-500 max-w-[15rem] hidden lg:table-cell">
+                        {story.labels.map((label) => (
+                          <span
+                            key={label + randomId()}
+                            className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset mr-1 mb-1 ${
+                              label.labelType == "LOCATION"
+                                ? "bg-blue-100 text-blue-800 ring-blue-600/20"
+                                : label.labelType == "AUDIENCE"
+                                ? "bg-green-100 text-green-800 ring-green-600/20"
+                                : label.labelType == "TOPIC"
+                                ? "bg-yellow-100 text-yellow-800 ring-yellow-600/20"
+                                : label.labelType == "CATEGORY"
+                                ? "bg-purple-100 text-purple-800 ring-purple-600/20"
+                                : "bg-gray-100 text-gray-800"
+                            }`}
+                          >
+                            {label.labelType == "LOCATION" ? (
+                              <MapPinIcon className="h-4 w-4 mr-1" />
+                            ) : null}
+                            {label.labelType == "AUDIENCE" ? (
+                              <UserGroupIcon className="h-4 w-4 mr-1" />
+                            ) : null}
+                            {label.labelType == "TOPIC" ? (
+                              <TagIcon className="h-4 w-4 mr-1" />
+                            ) : null}
+                            {label.labelType == "CATEGORY" ? (
+                              <ChartPieIcon className="h-4 w-4 mr-1" />
+                            ) : null}
+                            {label.labelName}
+                          </span>
+                        ))}
+                      </td>
+                      <td className="whitespace-nowrap px-3 py-2.5 text-sm text-gray-500 hidden xs:table-cell">
+                        {story.author}
+                      </td>
+                      <td className="relative whitespace-nowrap py-2.5 pl-3 text-left text-sm font-medium sm:pr-0">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            navigate(`/stories/${story.id}`, {
+                              state: { page, search },
+                            });
+                          }}
+                          className="rounded-md bg-red-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
                         >
-                          {label.labelType == "LOCATION" ? (
-                            <MapPinIcon className="h-4 w-4 mr-1" />
-                          ) : null}
-                          {label.labelType == "AUDIENCE" ? (
-                            <UserGroupIcon className="h-4 w-4 mr-1" />
-                          ) : null}
-                          {label.labelType == "TOPIC" ? (
-                            <TagIcon className="h-4 w-4 mr-1" />
-                          ) : null}
-                          {label.labelType == "CATEGORY" ? (
-                            <ChartPieIcon className="h-4 w-4 mr-1" />
-                          ) : null}
-                          {label.labelName}
-                        </span>
-                      ))}
-                    </td>
-                    <td className="whitespace-nowrap px-3 py-2.5 text-sm text-gray-500 hidden xs:table-cell">
-                      {story.author}
-                    </td>
-                    <td className="relative whitespace-nowrap py-2.5 pl-3 text-left text-sm font-medium sm:pr-0">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          navigate(`/stories/${story.id}`, {
-                            state: { page, search },
-                          });
-                        }}
-                        className="rounded-md bg-red-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
-                      >
-                        Bekijk<span className="sr-only">, {story.title}</span>
-                      </button>
+                          Bekijk<span className="sr-only">, {story.title}</span>
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="6" className="text-center py-4 text-gray-500">
+                      Geen resultaten gevonden
                     </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>

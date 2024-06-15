@@ -3,8 +3,6 @@
 import axios from "axios";
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
-import { DemoSources } from "../data/DemoSources.js";
-import { useApi } from "../ApiContext.jsx";
 import { truncateString } from "../data/functions.js";
 
 export default function SourcesTable() {
@@ -14,7 +12,6 @@ export default function SourcesTable() {
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
-  const { apiConnected } = useApi();
   const apiUrl = import.meta.env.VITE_API_URL;
 
   const authToken = localStorage.getItem("authToken");
@@ -84,15 +81,10 @@ export default function SourcesTable() {
   }, [debouncedSearch, page]);
 
   useEffect(() => {
-    if (!apiConnected) {
-      setSources(DemoSources);
-      setTotalResults(DemoSources.length);
-      return;
-    }
     getSources();
-  }, [page, debouncedSearch, apiConnected]);
+  }, [page, debouncedSearch]);
 
-  const totalPages = apiConnected ? Math.ceil(totalResults / 10) : 1;
+  const totalPages = Math.ceil(totalResults / 10);
   return (
     <>
       <div className="px-8 sm:px-12 lg:px-16">
@@ -178,33 +170,41 @@ export default function SourcesTable() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200 bg-white">
-                {sources.map((source) => (
-                  <tr key={source.id} className="bg-gray-100">
-                    <td className="whitespace-nowrap px-3 py-2.5 text-sm text-gray-500 hidden sm:table-cell">
-                      {source.name}
-                    </td>
-                    <td className="whitespace-nowrap px-3 py-2.5 text-sm text-gray-500">
-                      <Link
-                        to={source.website}
-                        className="text-red-600 hover:text-red-500"
-                      >
-                        {truncateString(source.website, 50)}
-                      </Link>
-                    </td>
-                    <td className="relative whitespace-nowrap py-2.5 pl-3 text-left text-sm font-medium sm:pr-0">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          alert("Scrape bron id: " + source.id);
-                        }}
-                        className="rounded-md bg-red-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
-                      >
-                        Start scrape
-                        <span className="sr-only">, {source.name}</span>
-                      </button>
+                {sources.length ? (
+                  sources.map((source) => (
+                    <tr key={source.id} className="bg-gray-100">
+                      <td className="whitespace-nowrap px-3 py-2.5 text-sm text-gray-500 hidden sm:table-cell">
+                        {source.name}
+                      </td>
+                      <td className="whitespace-nowrap px-3 py-2.5 text-sm text-gray-500">
+                        <Link
+                          to={source.website}
+                          className="text-red-600 hover:text-red-500"
+                        >
+                          {truncateString(source.website, 50)}
+                        </Link>
+                      </td>
+                      <td className="relative whitespace-nowrap py-2.5 pl-3 text-left text-sm font-medium sm:pr-0">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            alert("Scrape bron id: " + source.id);
+                          }}
+                          className="rounded-md bg-red-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
+                        >
+                          Start scrape
+                          <span className="sr-only">, {source.name}</span>
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="3" className="text-center py-4 text-gray-500">
+                      Geen resultaten gevonden
                     </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>
