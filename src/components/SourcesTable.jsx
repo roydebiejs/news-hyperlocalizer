@@ -16,7 +16,6 @@ export default function SourcesTable() {
 
   const authToken = localStorage.getItem("authToken");
 
-  // Get initial page number from location state or default to 1
   const initialPage = location.state?.page || 1;
   const searchQuery = location.state?.search || "";
   useEffect(() => {
@@ -29,7 +28,6 @@ export default function SourcesTable() {
 
   useEffect(() => {
     setPage(initialPage);
-    // Debounce search input
     if (debounceTimeout.current) {
       clearTimeout(debounceTimeout.current);
     }
@@ -83,6 +81,26 @@ export default function SourcesTable() {
   useEffect(() => {
     getSources();
   }, [page, debouncedSearch]);
+
+  const handleScrape = async (sourceId) => {
+    try {
+      const response = await axios.post(
+        `${apiUrl}/api/collect_stories/`,
+        { sourceid: sourceId },
+        {
+          headers: {
+            Authorization: `Token ${authToken}`,
+          },
+        }
+      );
+      console.log(response.status);
+      if (response.status === 200) {
+        alert("Scraping started for source id: " + sourceId);
+      }
+    } catch (error) {
+      console.error("Error starting scraping:", error);
+    }
+  };
 
   const totalPages = Math.ceil(totalResults / 10);
   return (
@@ -187,9 +205,7 @@ export default function SourcesTable() {
                       <td className="relative whitespace-nowrap py-2.5 pl-3 text-left text-sm font-medium sm:pr-0">
                         <button
                           type="button"
-                          onClick={() => {
-                            alert("Scrape bron id: " + source.id);
-                          }}
+                          onClick={() => handleScrape(source.id)}
                           className="rounded-md bg-red-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
                         >
                           Start scrape
