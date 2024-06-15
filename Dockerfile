@@ -10,14 +10,14 @@ COPY package.json .
 # Install project dependencies
 RUN npm install
 
+# Create an empty .env file (if needed)
+RUN touch .env
+
 # Copy the rest of your app's source code
 COPY . .
-
-# Set environment variable
-ENV VITE_API_URL=http://localhost:8000
 
 # Expose port 5173 for Vite's development server
 EXPOSE 5173
 
 # Command to run Vite development server
-CMD ["npm", "run", "dev"]
+CMD ["sh", "entrypoint.sh"]

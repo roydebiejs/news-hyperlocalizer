@@ -8,3 +8,7 @@ services:
     volumes:
       - .:/app
       - /app/node_modules
+    environment:
+      - VITE_API_URL=api_url
+      - VITE_API_USERNAME=api_username
+      - VITE_API_PASSWORD=api_password
